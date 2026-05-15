@@ -1,0 +1,28 @@
+name: smarthomeapp
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Thư viện icon mặc định của iOS
+  cupertino_icons: ^1.0.8
+
+  # CÁC THƯ VIỆN ĐƯỢC THÊM VÀO ĐỂ ĐIỀU KHIỂN ESP32 BẰNG GIỌNG NÓI
+  speech_to_text: ^7.0.0
+  http: ^1.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
