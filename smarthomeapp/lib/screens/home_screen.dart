@@ -5,6 +5,9 @@ import '../config/app_config.dart';
 import '../config/voice_commands.dart';
 import '../models/device.dart';
 import '../services/esp32_client.dart';
+import 'tabs/device_state_log_tab.dart';
+import 'tabs/manual_control_tab.dart';
+import 'tabs/voice_control_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,68 +16,25 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    {
   final Esp32Client _client = Esp32Client(baseUrl: AppConfig.esp32BaseUrl);
-  final stt.SpeechToText _speech = stt.SpeechToText();
 
+  int _currentIndex = 1;
   bool _loading = true;
   String? _error;
   List<Device> _devices = const [];
-  bool _speechAvailable = false;
-  bool _isListening = false;
-  String _lastWords = '';
-  String _speechError = '';
+  List<DeviceLog> _deviceLogs = [];
 
   @override
   void initState() {
     super.initState();
     _loadDevices();
-    _initSpeech();
   }
 
   @override
   void dispose() {
-    _speech.stop();
     super.dispose();
-  }
-
-  Future<void> _initSpeech() async {
-    final available = await _speech.initialize(
-      onStatus: _onSpeechStatus,
-      onError: _onSpeechError,
-    );
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _speechAvailable = available;
-      if (!available) {
-        _speechError = 'Speech recognition is not available.';
-      }
-    });
-  }
-
-  void _onSpeechStatus(String status) {
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _isListening = _speech.isListening;
-    });
-  }
-
-  void _onSpeechError(Object error) {
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _speechError = error.toString();
-      _isListening = false;
-    });
   }
 
   Future<void> _loadDevices() async {
@@ -113,6 +73,15 @@ class _HomeScreenState extends State<HomeScreen> {
         _devices = _devices
             .map((item) => item.id == updated.id ? updated : item)
             .toList();
+        // Log device state change
+        _deviceLogs.add(
+          DeviceLog(
+            deviceName: device.name,
+            deviceId: device.id,
+            newState: nextState,
+            timestamp: DateTime.now(),
+          ),
+        );
       });
     } catch (_) {
       setState(() {
@@ -133,175 +102,91 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Smart Home'),
-      ),
-      body: RefreshIndicator(
-        onRefresh: _loadDevices,
-        child: _buildBody(),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _speechAvailable ? _toggleListening : _initSpeech,
-        icon: Icon(_isListening ? Icons.stop : Icons.mic),
-        label: Text(_isListening ? 'Stop' : 'Listen'),
-      ),
-    );
-  }
-
-  Widget _buildBody() {
     if (_loading) {
-      return const Center(child: CircularProgressIndicator());
+      return Scaffold(
+        appBar: AppBar(title: const Text('Smart Home')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
     }
 
     if (_error != null) {
-      return ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          Text(
-            'Error: $_error',
-            style: const TextStyle(color: Colors.redAccent),
-          ),
-          const SizedBox(height: 12),
-          ElevatedButton(
-            onPressed: _loadDevices,
-            child: const Text('Retry'),
-          ),
-        ],
-      );
-    }
-
-    if (_devices.isEmpty) {
-      return ListView(
-        padding: const EdgeInsets.all(24),
-        children: const [
-          Text('No devices found.'),
-        ],
-      );
-    }
-
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      itemCount: _devices.length + 1,
-      separatorBuilder: (_, _) => const Divider(height: 1),
-      itemBuilder: (context, index) {
-        if (index == 0) {
-          return _buildSpeechPanel();
-        }
-
-        final device = _devices[index - 1];
-        return ListTile(
-          leading: Icon(device.isOn ? Icons.lightbulb : Icons.lightbulb_outline),
-          title: Text(device.name),
-          subtitle: Text(_buildSubtitle(device)),
-          trailing: Switch(
-            value: device.isOn,
-            onChanged: (value) => _toggleDevice(device, value),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSpeechPanel() {
-    final status = _isListening
-        ? 'Listening...'
-        : _speechAvailable
-            ? 'Ready'
-            : 'Unavailable';
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
+      return Scaffold(
+        appBar: AppBar(title: const Text('Smart Home')),
+        body: Center(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                children: [
-                  Icon(_isListening ? Icons.mic : Icons.mic_none),
-                  const SizedBox(width: 8),
-                  Text('Voice control: $status'),
-                ],
+              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+              const SizedBox(height: 16),
+              Text(_error!),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _loadDevices,
+                child: const Text('Retry'),
               ),
-              const SizedBox(height: 8),
-              Text(
-                _lastWords.isEmpty
-                    ? VoiceCommandConfig.getHints()
-                    : 'Heard: $_lastWords',
-              ),
-              if (_speechError.isNotEmpty) ...[
-                const SizedBox(height: 6),
-                Text(
-                  _speechError,
-                  style: const TextStyle(color: Colors.redAccent),
-                ),
-              ],
             ],
           ),
         ),
+      );
+    }
+
+    final titles = ['Voice Control', 'Smart Home', 'Device Log'];
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(titles[_currentIndex]),
+        elevation: 0,
+      ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          VoiceControlTab(
+            onCommandRecognized: _handleVoiceCommand,
+            onListeningStarted: () {},
+            onListeningStopped: () {},
+          ),
+          ManualControlTab(
+            devices: _devices,
+            onDeviceToggled: _toggleDevice,
+          ),
+          DeviceStateLogTab(
+            logs: _deviceLogs,
+            onClearLogs: () {
+              setState(() {
+                _deviceLogs.clear();
+              });
+            },
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.mic_none),
+            activeIcon: Icon(Icons.mic),
+            label: 'Voice',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.space_dashboard_outlined),
+            activeIcon: Icon(Icons.space_dashboard),
+            label: 'Control',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history_outlined),
+            activeIcon: Icon(Icons.history),
+            label: 'Log',
+          ),
+        ],
       ),
     );
   }
 
-  Future<void> _toggleListening() async {
-    if (_isListening) {
-      await _speech.stop();
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _isListening = false;
-      });
-      return;
-    }
-
-    if (!_speechAvailable) {
-      await _initSpeech();
-    }
-
-    if (!_speechAvailable) {
-      _showSnackBar('Speech recognition is not available.');
-      return;
-    }
-
-    setState(() {
-      _speechError = '';
-      _lastWords = '';
-    });
-
-    await _speech.listen(
-      onResult: _onSpeechResult,
-      listenFor: const Duration(seconds: 8),
-      pauseFor: const Duration(seconds: 2),
-      localeId: 'vi_VN',
-    );
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _isListening = true;
-    });
-  }
-
-  void _onSpeechResult(Object result) {
-    final dynamicResult = result as dynamic;
-    final words = (dynamicResult.recognizedWords ?? '').toString();
-    final isFinal = dynamicResult.finalResult == true;
-
-    setState(() {
-      _lastWords = words;
-    });
-
-    if (isFinal) {
-      _handleCommand(_lastWords);
-    }
-  }
-
-  Future<void> _handleCommand(String words) async {
+  Future<void> _handleVoiceCommand(String words) async {
     final command = _parseCommand(words);
     if (command == null) {
       _showSnackBar('Command not recognized.');
