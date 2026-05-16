@@ -302,7 +302,30 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Device? _findDeviceByName(String normalized) {
-    // Apply Vietnamese aliases
+    // Sort alias entries by key length descending so longer (more specific)
+    // phrases are tried first (e.g. 'den phong ngu 1' before 'den').
+    final sortedAliases = VoiceCommandConfig.vietnameseDeviceAliases.entries
+        .toList()
+      ..sort((a, b) => b.key.length.compareTo(a.key.length));
+
+    // Check if any alias phrase is found in the normalized text.
+    for (final entry in sortedAliases) {
+      if (normalized.contains(entry.key)) {
+        final value = entry.value;
+        // If the alias maps directly to a device ID, return that device.
+        final directMatches =
+            _devices.where((d) => d.id == value).toList();
+        if (directMatches.isNotEmpty) {
+          return directMatches.first;
+        }
+        // Otherwise the alias maps to a generic label (e.g. 'lamp') –
+        // fall through to fuzzy matching with the translated text.
+        break;
+      }
+    }
+
+    // Fallback: apply aliases to translate Vietnamese words to English labels,
+    // then do token-based matching against device names.
     String searchText = _applyVietnameseAliases(normalized);
 
     Device? bestMatch;
@@ -310,9 +333,7 @@ class _HomeScreenState extends State<HomeScreen>
 
     for (final device in _devices) {
       final name = _normalizeText(device.name);
-      if (name.isEmpty) {
-        continue;
-      }
+      if (name.isEmpty) continue;
 
       if (searchText.contains(name)) {
         final score = name.length;
@@ -325,9 +346,7 @@ class _HomeScreenState extends State<HomeScreen>
 
       final tokens = name.split(' ');
       for (final token in tokens) {
-        if (token.length < 3) {
-          continue;
-        }
+        if (token.length < 3) continue;
         if (searchText.contains(token)) {
           final score = token.length;
           if (score > bestScore) {
@@ -351,11 +370,23 @@ class _HomeScreenState extends State<HomeScreen>
 
   String _normalizeText(String input) {
     final stripped = _stripDiacritics(input);
-    return stripped
+    final lower = stripped
         .toLowerCase()
         .replaceAll(RegExp(r'[^a-z0-9 ]'), ' ')
         .replaceAll(RegExp(r'\s+'), ' ')
         .trim();
+    return _normalizeNumbers(lower);
+  }
+
+  /// Convert spoken Vietnamese number words to digits so aliases like
+  /// 'den phong ngu 1' match both "phòng ngủ 1" and "phòng ngủ một".
+  String _normalizeNumbers(String text) {
+    return text
+        .replaceAll(RegExp(r'\bmot\b'), '1')
+        .replaceAll(RegExp(r'\bhai\b'), '2')
+        .replaceAll(RegExp(r'\bba\b'), '3')
+        .replaceAll(RegExp(r'\bbon\b'), '4')
+        .replaceAll(RegExp(r'\bnam\b'), '5');
   }
 
   String _stripDiacritics(String input) {

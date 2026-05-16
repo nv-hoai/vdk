@@ -1,0 +1,315 @@
+{"receivedAt": "2026-05-16T05:53:37Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 326934, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "no_motion_timeout", "changed": true}}
+{"receivedAt": "2026-05-16T06:05:22Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 1031904, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:05:22Z", "type": "log", "event": "door_opened", "clientTimestamp": 1031916, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:05:22Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 1031929, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "rfid_welcome", "changed": true}}
+{"receivedAt": "2026-05-16T06:05:23Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 1033014, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "no_motion_timeout", "changed": true}}
+{"receivedAt": "2026-05-16T06:05:52Z", "type": "log", "event": "door_closed", "clientTimestamp": 1061940, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:08:25Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 1215152, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T06:09:34Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5705, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T06:11:52Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5818, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T06:11:59Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 13344, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:11:59Z", "type": "log", "event": "door_opened", "clientTimestamp": 13356, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:12:30Z", "type": "log", "event": "door_closed", "clientTimestamp": 43380, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:13:28Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 102064, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:13:28Z", "type": "log", "event": "door_opened", "clientTimestamp": 102076, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:13:29Z", "type": "log", "event": "gas_alert", "clientTimestamp": 102912, "mode": "AUTO", "meta": {"gasValue": 208, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T06:13:30Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 103763, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:13:31Z", "type": "log", "event": "gas_clear", "clientTimestamp": 104932, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T06:13:35Z", "type": "log", "event": "gas_alert", "clientTimestamp": 108972, "mode": "AUTO", "meta": {"gasValue": 201, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T06:13:35Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 109344, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:13:37Z", "type": "log", "event": "gas_clear", "clientTimestamp": 110992, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T06:13:39Z", "type": "log", "event": "gas_alert", "clientTimestamp": 112992, "mode": "AUTO", "meta": {"gasValue": 202, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T06:13:43Z", "type": "log", "event": "gas_clear", "clientTimestamp": 117012, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T06:13:57Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 130524, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:13:58Z", "type": "log", "event": "door_closed", "clientTimestamp": 132080, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:14:02Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 135964, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:14:02Z", "type": "log", "event": "door_opened", "clientTimestamp": 135976, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:14:32Z", "type": "log", "event": "door_closed", "clientTimestamp": 166000, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:15:36Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5518, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T06:15:43Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 12644, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:15:43Z", "type": "log", "event": "door_opened", "clientTimestamp": 12656, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 0}}
+{"receivedAt": "2026-05-16T06:15:46Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 15044, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:15:53Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 22044, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:16:02Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 31284, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:16:13Z", "type": "log", "event": "door_closed", "clientTimestamp": 42680, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 90}}
+{"receivedAt": "2026-05-16T06:16:13Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 42723, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:16:13Z", "type": "log", "event": "door_opened", "clientTimestamp": 42736, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 0}}
+{"receivedAt": "2026-05-16T06:16:16Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 44164, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:16:24Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 53604, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:16:36Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 64936, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:16:43Z", "type": "log", "event": "door_closed", "clientTimestamp": 72760, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 90}}
+{"receivedAt": "2026-05-16T06:16:49Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 78324, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:16:49Z", "type": "log", "event": "door_opened", "clientTimestamp": 78336, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 0}}
+{"receivedAt": "2026-05-16T06:17:02Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 90804, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:17:19Z", "type": "log", "event": "door_closed", "clientTimestamp": 108360, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 90}}
+{"receivedAt": "2026-05-16T06:35:49Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 6018, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T06:35:54Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 10064, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:35:57Z", "type": "log", "event": "door_opened", "clientTimestamp": 13664, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:36:02Z", "type": "log", "event": "door_closed", "clientTimestamp": 18684, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:36:10Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 26624, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:36:14Z", "type": "log", "event": "door_opened", "clientTimestamp": 30224, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:36:19Z", "type": "log", "event": "door_closed", "clientTimestamp": 35244, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:37:16Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 92304, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:37:19Z", "type": "log", "event": "door_opened", "clientTimestamp": 95904, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:37:24Z", "type": "log", "event": "door_closed", "clientTimestamp": 100924, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:40:02Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 259036, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:40:06Z", "type": "log", "event": "door_opened", "clientTimestamp": 262644, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:40:11Z", "type": "log", "event": "door_closed", "clientTimestamp": 267664, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:40:30Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 286844, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:40:34Z", "type": "log", "event": "door_opened", "clientTimestamp": 290444, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:40:39Z", "type": "log", "event": "door_closed", "clientTimestamp": 295464, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:40:40Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 296204, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:40:43Z", "type": "log", "event": "door_opened", "clientTimestamp": 299804, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:40:48Z", "type": "log", "event": "door_closed", "clientTimestamp": 304824, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:42:30Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 406844, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:42:34Z", "type": "log", "event": "door_opened", "clientTimestamp": 410444, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:42:39Z", "type": "log", "event": "door_closed", "clientTimestamp": 415464, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:45:10Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 566324, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:45:13Z", "type": "log", "event": "door_opened", "clientTimestamp": 569924, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:45:19Z", "type": "log", "event": "door_closed", "clientTimestamp": 574944, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:45:19Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 575664, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:45:23Z", "type": "log", "event": "door_opened", "clientTimestamp": 579264, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:45:28Z", "type": "log", "event": "door_closed", "clientTimestamp": 584284, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:48:37Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 773384, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:48:40Z", "type": "log", "event": "door_opened", "clientTimestamp": 776984, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:48:45Z", "type": "log", "event": "door_closed", "clientTimestamp": 782004, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:49:35Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 831864, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T06:49:39Z", "type": "log", "event": "door_opened", "clientTimestamp": 835464, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T06:49:44Z", "type": "log", "event": "door_closed", "clientTimestamp": 840484, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T06:49:48Z", "type": "log", "event": "gas_alert", "clientTimestamp": 844552, "mode": "AUTO", "meta": {"gasValue": 205, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T06:49:52Z", "type": "log", "event": "door_opened", "clientTimestamp": 848164, "mode": "AUTO", "meta": {"reason": "gas_warning", "angle": 90}}
+{"receivedAt": "2026-05-16T06:49:52Z", "type": "log", "event": "gas_clear", "clientTimestamp": 848229, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T06:49:57Z", "type": "log", "event": "door_closed", "clientTimestamp": 853184, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:02:48Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 1624484, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:02:52Z", "type": "log", "event": "door_opened", "clientTimestamp": 1628084, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:02:57Z", "type": "log", "event": "door_closed", "clientTimestamp": 1633104, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:02:59Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 1635224, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:03:02Z", "type": "log", "event": "door_opened", "clientTimestamp": 1638824, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:03:07Z", "type": "log", "event": "door_closed", "clientTimestamp": 1643844, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:03:13Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 1649464, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:03:17Z", "type": "log", "event": "door_opened", "clientTimestamp": 1653064, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:03:22Z", "type": "log", "event": "door_closed", "clientTimestamp": 1658084, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:03:35Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 1671984, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:03:39Z", "type": "log", "event": "door_opened", "clientTimestamp": 1675584, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:03:44Z", "type": "log", "event": "door_closed", "clientTimestamp": 1680604, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:03:52Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 1688784, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:03:56Z", "type": "log", "event": "door_opened", "clientTimestamp": 1692384, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:04:01Z", "type": "log", "event": "door_closed", "clientTimestamp": 1697404, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:04:22Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 1718104, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:04:25Z", "type": "log", "event": "door_opened", "clientTimestamp": 1721704, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:04:30Z", "type": "log", "event": "door_closed", "clientTimestamp": 1726724, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:04:34Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 1730384, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:04:38Z", "type": "log", "event": "door_opened", "clientTimestamp": 1733984, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:04:43Z", "type": "log", "event": "door_closed", "clientTimestamp": 1739004, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:04:47Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 1743704, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:04:51Z", "type": "log", "event": "door_opened", "clientTimestamp": 1747304, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:04:56Z", "type": "log", "event": "door_closed", "clientTimestamp": 1752324, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:08:31Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 8758, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:08:35Z", "type": "log", "event": "door_closed", "clientTimestamp": 12644, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:08:45Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 22504, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:08:48Z", "type": "log", "event": "door_opened", "clientTimestamp": 26104, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:08:53Z", "type": "log", "event": "door_closed", "clientTimestamp": 31124, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:11:16Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 174024, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:11:20Z", "type": "log", "event": "door_opened", "clientTimestamp": 177624, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:11:20Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 177694, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:11:25Z", "type": "log", "event": "door_closed", "clientTimestamp": 182644, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:11:41Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 198744, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:11:45Z", "type": "log", "event": "door_opened", "clientTimestamp": 202344, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:11:45Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 202413, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:11:50Z", "type": "log", "event": "door_closed", "clientTimestamp": 207364, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:11:50Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 207704, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:11:54Z", "type": "log", "event": "door_opened", "clientTimestamp": 211304, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:11:59Z", "type": "log", "event": "door_closed", "clientTimestamp": 216324, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:12:09Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 226864, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:12:13Z", "type": "log", "event": "door_opened", "clientTimestamp": 230464, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:12:18Z", "type": "log", "event": "door_closed", "clientTimestamp": 235484, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:14:39Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 377004, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:14:43Z", "type": "log", "event": "door_opened", "clientTimestamp": 380604, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:14:48Z", "type": "log", "event": "door_closed", "clientTimestamp": 385624, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:14:56Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 393696, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:15:00Z", "type": "log", "event": "door_opened", "clientTimestamp": 397304, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:15:05Z", "type": "log", "event": "door_closed", "clientTimestamp": 402324, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:15:10Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 407544, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:15:14Z", "type": "log", "event": "door_opened", "clientTimestamp": 411144, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:15:18Z", "type": "log", "event": "door_closed", "clientTimestamp": 416164, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:15:20Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 417464, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:15:23Z", "type": "log", "event": "door_opened", "clientTimestamp": 421064, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:15:24Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 421484, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:15:28Z", "type": "log", "event": "door_closed", "clientTimestamp": 426084, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:15:50Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 447544, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:15:53Z", "type": "log", "event": "door_opened", "clientTimestamp": 451144, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:15:59Z", "type": "log", "event": "door_closed", "clientTimestamp": 456164, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:16:45Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 502234, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:16:46Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 504254, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T07:16:49Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 506274, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:16:51Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 508294, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T07:16:59Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 516314, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:17:05Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 522334, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T07:19:46Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5378, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:19:52Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 10994, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T07:19:54Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 13014, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:20:18Z", "type": "log", "event": "gas_alert", "clientTimestamp": 37032, "mode": "AUTO", "meta": {"gasValue": 325, "threshold": 300, "level": "DANGER"}}
+{"receivedAt": "2026-05-16T07:20:18Z", "type": "log", "event": "buzzer_alarm_start", "clientTimestamp": 37044, "mode": "AUTO", "meta": {"reason": "gas_danger"}}
+{"receivedAt": "2026-05-16T07:20:21Z", "type": "log", "event": "door_opened", "clientTimestamp": 40644, "mode": "AUTO", "meta": {"reason": "gas_danger", "angle": 90}}
+{"receivedAt": "2026-05-16T07:20:26Z", "type": "log", "event": "door_closed", "clientTimestamp": 45664, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:20:26Z", "type": "log", "event": "buzzer_alarm_stop", "clientTimestamp": 45728, "mode": "AUTO", "meta": {"reason": "gas_clear"}}
+{"receivedAt": "2026-05-16T07:20:26Z", "type": "log", "event": "gas_clear", "clientTimestamp": 45740, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:20:57Z", "type": "log", "event": "gas_alert", "clientTimestamp": 75752, "mode": "AUTO", "meta": {"gasValue": 606, "threshold": 300, "level": "DANGER"}}
+{"receivedAt": "2026-05-16T07:20:57Z", "type": "log", "event": "buzzer_alarm_start", "clientTimestamp": 75764, "mode": "AUTO", "meta": {"reason": "gas_danger"}}
+{"receivedAt": "2026-05-16T07:21:00Z", "type": "log", "event": "door_opened", "clientTimestamp": 79364, "mode": "AUTO", "meta": {"reason": "gas_danger", "angle": 90}}
+{"receivedAt": "2026-05-16T07:21:05Z", "type": "log", "event": "door_closed", "clientTimestamp": 84384, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:21:05Z", "type": "log", "event": "buzzer_alarm_stop", "clientTimestamp": 84448, "mode": "AUTO", "meta": {"reason": "gas_clear"}}
+{"receivedAt": "2026-05-16T07:21:05Z", "type": "log", "event": "gas_clear", "clientTimestamp": 84460, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:21:29Z", "type": "log", "event": "gas_alert", "clientTimestamp": 108472, "mode": "AUTO", "meta": {"gasValue": 483, "threshold": 300, "level": "DANGER"}}
+{"receivedAt": "2026-05-16T07:21:29Z", "type": "log", "event": "buzzer_alarm_start", "clientTimestamp": 108484, "mode": "AUTO", "meta": {"reason": "gas_danger"}}
+{"receivedAt": "2026-05-16T07:21:33Z", "type": "log", "event": "door_opened", "clientTimestamp": 112084, "mode": "AUTO", "meta": {"reason": "gas_danger", "angle": 90}}
+{"receivedAt": "2026-05-16T07:21:38Z", "type": "log", "event": "door_closed", "clientTimestamp": 117104, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:21:38Z", "type": "log", "event": "buzzer_alarm_stop", "clientTimestamp": 117168, "mode": "AUTO", "meta": {"reason": "gas_clear"}}
+{"receivedAt": "2026-05-16T07:21:38Z", "type": "log", "event": "gas_clear", "clientTimestamp": 117180, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:21:42Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 121144, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:21:45Z", "type": "log", "event": "door_opened", "clientTimestamp": 124744, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:21:45Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 124758, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "rfid_welcome", "changed": true}}
+{"receivedAt": "2026-05-16T07:21:46Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 124835, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:21:51Z", "type": "log", "event": "door_closed", "clientTimestamp": 129764, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:22:25Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 164144, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:22:29Z", "type": "log", "event": "door_opened", "clientTimestamp": 167744, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:22:29Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 167758, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "rfid_welcome", "changed": true}}
+{"receivedAt": "2026-05-16T07:22:29Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 167835, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:22:34Z", "type": "log", "event": "door_closed", "clientTimestamp": 172764, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:22:42Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5578, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:22:54Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 17528, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": false}}
+{"receivedAt": "2026-05-16T07:25:38Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 181598, "mode": "MANUAL", "meta": {}}
+{"receivedAt": "2026-05-16T07:25:59Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 202428, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:26:04Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 207568, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:26:05Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 209388, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:26:28Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 232128, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:26:28Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 232228, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:26:28Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 232289, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:26:39Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 243428, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:27:01Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 265088, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": false}}
+{"receivedAt": "2026-05-16T07:27:10Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 273908, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:27:20Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 283528, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:27:30Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 293548, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": false}}
+{"receivedAt": "2026-05-16T07:28:24Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 348248, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:30:13Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5358, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:30:32Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 25118, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:30:46Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 38974, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T07:30:48Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 40994, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:31:06Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 58428, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:31:21Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 73368, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": false}}
+{"receivedAt": "2026-05-16T07:31:33Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 85388, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": false}}
+{"receivedAt": "2026-05-16T07:33:01Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 173928, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:33:03Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 175388, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:33:10Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 182328, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:33:12Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 184388, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:33:13Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 185808, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:34:47Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 279428, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:34:58Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 290888, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:35:08Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 300708, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:37:20Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 432418, "mode": "MANUAL", "meta": {}}
+{"receivedAt": "2026-05-16T07:38:09Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 481408, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:38:25Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 497281, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:38:42Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 514288, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:38:42Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 514349, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:00Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 532528, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:00Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 532748, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:20Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 552408, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:20Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 552708, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:21Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 554248, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:22Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 554309, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:23Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 555488, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": false}}
+{"receivedAt": "2026-05-16T07:39:24Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 556948, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:39Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 571275, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:39Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 571336, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:39Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 571397, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:49Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 581488, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:49Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 581708, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:39:49Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 581769, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:40:07Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 599908, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:40:15Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 607888, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:40:23Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 615708, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:40:33Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 625928, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:40:33Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 625989, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:40:33Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 626050, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": false, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T07:42:15Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 6098, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:42:16Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 6954, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:42:18Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 8974, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T07:42:20Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 10994, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:42:34Z", "type": "log", "event": "gas_alert", "clientTimestamp": 25012, "mode": "AUTO", "meta": {"gasValue": 560, "threshold": 300, "level": "DANGER"}}
+{"receivedAt": "2026-05-16T07:42:34Z", "type": "log", "event": "buzzer_alarm_start", "clientTimestamp": 25024, "mode": "AUTO", "meta": {"reason": "gas_danger"}}
+{"receivedAt": "2026-05-16T07:42:38Z", "type": "log", "event": "door_opened", "clientTimestamp": 28624, "mode": "AUTO", "meta": {"reason": "gas_danger", "angle": 90}}
+{"receivedAt": "2026-05-16T07:42:43Z", "type": "log", "event": "door_closed", "clientTimestamp": 33644, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:42:43Z", "type": "log", "event": "buzzer_alarm_stop", "clientTimestamp": 33708, "mode": "AUTO", "meta": {"reason": "gas_clear"}}
+{"receivedAt": "2026-05-16T07:42:43Z", "type": "log", "event": "gas_clear", "clientTimestamp": 33720, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:42:49Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 40444, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:42:53Z", "type": "log", "event": "door_opened", "clientTimestamp": 44044, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:42:53Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 44058, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "rfid_welcome", "changed": true}}
+{"receivedAt": "2026-05-16T07:42:53Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 44135, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:42:58Z", "type": "log", "event": "door_closed", "clientTimestamp": 49064, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:43:00Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 50883, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T07:43:04Z", "type": "log", "event": "door_opened", "clientTimestamp": 54484, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T07:43:04Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 54498, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "rfid_welcome", "changed": true}}
+{"receivedAt": "2026-05-16T07:43:04Z", "type": "log", "event": "gas_alert", "clientTimestamp": 54573, "mode": "AUTO", "meta": {"gasValue": 208, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T07:43:04Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 54587, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:43:08Z", "type": "log", "event": "door_closed", "clientTimestamp": 59524, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T07:43:08Z", "type": "log", "event": "gas_clear", "clientTimestamp": 59588, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:55:34Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5558, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:56:29Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5388, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:56:54Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 29868, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:57:01Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 37169, "mode": "MANUAL", "meta": {"deviceId": "fan-1", "deviceName": "Quat", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": false}}
+{"receivedAt": "2026-05-16T07:59:03Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 6188, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T07:59:08Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 11044, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T07:59:10Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 13044, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T07:59:14Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 17064, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T07:59:16Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 19064, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T08:00:09Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 71564, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T08:00:11Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 73564, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T08:01:12Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5558, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T08:01:15Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 8764, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T08:01:19Z", "type": "log", "event": "door_opened", "clientTimestamp": 12364, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T08:01:19Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 12378, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "rfid_welcome", "changed": true}}
+{"receivedAt": "2026-05-16T08:01:19Z", "type": "log", "event": "gas_alert", "clientTimestamp": 12453, "mode": "AUTO", "meta": {"gasValue": 210, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T08:01:19Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 12467, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T08:01:24Z", "type": "log", "event": "door_closed", "clientTimestamp": 17404, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T08:01:24Z", "type": "log", "event": "gas_clear", "clientTimestamp": 17468, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T08:01:36Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 29474, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T08:01:38Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 31494, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T08:02:18Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 72098, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T08:02:22Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 75514, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "auto", "reason": "motion_dark", "changed": true}}
+{"receivedAt": "2026-05-16T08:02:23Z", "type": "log", "event": "rfid_scan", "clientTimestamp": 76444, "mode": "AUTO", "meta": {"uid": "96 59 E3 00", "authorized": true}}
+{"receivedAt": "2026-05-16T08:02:26Z", "type": "log", "event": "door_opened", "clientTimestamp": 80044, "mode": "AUTO", "meta": {"reason": "rfid_authorized", "angle": 90}}
+{"receivedAt": "2026-05-16T08:02:26Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 80111, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": false, "trigger": "auto", "reason": "daylight", "changed": true}}
+{"receivedAt": "2026-05-16T08:02:26Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 80146, "mode": "MANUAL", "meta": {"deviceId": "fan-1", "deviceName": "Quat", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": false}}
+{"receivedAt": "2026-05-16T08:02:31Z", "type": "log", "event": "door_closed", "clientTimestamp": 85084, "mode": "MANUAL", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T08:02:41Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 94568, "mode": "MANUAL", "meta": {"deviceId": "lamp-1", "deviceName": "Phong khach", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T08:02:42Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 95788, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed1", "deviceName": "Phong ngu 1", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T08:02:44Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 98248, "mode": "MANUAL", "meta": {"deviceId": "lamp-bed2", "deviceName": "Phong ngu 2", "isOn": true, "trigger": "manual", "reason": "server_command", "changed": true}}
+{"receivedAt": "2026-05-16T08:04:51Z", "type": "log", "event": "gas_alert", "clientTimestamp": 225212, "mode": "MANUAL", "meta": {"gasValue": 673, "threshold": 300, "level": "DANGER"}}
+{"receivedAt": "2026-05-16T08:04:51Z", "type": "log", "event": "buzzer_alarm_start", "clientTimestamp": 225224, "mode": "MANUAL", "meta": {"reason": "gas_danger"}}
+{"receivedAt": "2026-05-16T08:04:55Z", "type": "log", "event": "door_opened", "clientTimestamp": 228824, "mode": "MANUAL", "meta": {"reason": "gas_danger", "angle": 90}}
+{"receivedAt": "2026-05-16T08:05:00Z", "type": "log", "event": "door_closed", "clientTimestamp": 233844, "mode": "MANUAL", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T08:05:00Z", "type": "log", "event": "buzzer_alarm_stop", "clientTimestamp": 233908, "mode": "MANUAL", "meta": {"reason": "gas_clear"}}
+{"receivedAt": "2026-05-16T08:05:00Z", "type": "log", "event": "gas_clear", "clientTimestamp": 233920, "mode": "MANUAL", "meta": {}}
+{"receivedAt": "2026-05-16T08:05:22Z", "type": "log", "event": "gas_alert", "clientTimestamp": 255932, "mode": "MANUAL", "meta": {"gasValue": 208, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T08:05:26Z", "type": "log", "event": "door_opened", "clientTimestamp": 259544, "mode": "MANUAL", "meta": {"reason": "gas_warning", "angle": 90}}
+{"receivedAt": "2026-05-16T08:05:31Z", "type": "log", "event": "door_closed", "clientTimestamp": 264564, "mode": "MANUAL", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T08:05:31Z", "type": "log", "event": "gas_clear", "clientTimestamp": 264628, "mode": "MANUAL", "meta": {}}
+{"receivedAt": "2026-05-16T08:05:33Z", "type": "log", "event": "gas_alert", "clientTimestamp": 266632, "mode": "MANUAL", "meta": {"gasValue": 208, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T08:05:36Z", "type": "log", "event": "door_opened", "clientTimestamp": 270244, "mode": "MANUAL", "meta": {"reason": "gas_warning", "angle": 90}}
+{"receivedAt": "2026-05-16T08:05:36Z", "type": "log", "event": "gas_clear", "clientTimestamp": 270309, "mode": "MANUAL", "meta": {}}
+{"receivedAt": "2026-05-16T08:05:41Z", "type": "log", "event": "door_closed", "clientTimestamp": 275264, "mode": "MANUAL", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T08:05:49Z", "type": "log", "event": "gas_alert", "clientTimestamp": 283332, "mode": "MANUAL", "meta": {"gasValue": 210, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T08:05:53Z", "type": "log", "event": "door_opened", "clientTimestamp": 286944, "mode": "MANUAL", "meta": {"reason": "gas_warning", "angle": 90}}
+{"receivedAt": "2026-05-16T08:05:58Z", "type": "log", "event": "door_closed", "clientTimestamp": 291964, "mode": "MANUAL", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T08:05:58Z", "type": "log", "event": "gas_clear", "clientTimestamp": 292027, "mode": "MANUAL", "meta": {}}
+{"receivedAt": "2026-05-16T08:06:04Z", "type": "log", "event": "gas_alert", "clientTimestamp": 298032, "mode": "MANUAL", "meta": {"gasValue": 200, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T08:06:08Z", "type": "log", "event": "door_opened", "clientTimestamp": 301644, "mode": "MANUAL", "meta": {"reason": "gas_warning", "angle": 90}}
+{"receivedAt": "2026-05-16T08:06:15Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 6298, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T08:06:17Z", "type": "log", "event": "gas_alert", "clientTimestamp": 8912, "mode": "AUTO", "meta": {"gasValue": 206, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T08:06:21Z", "type": "log", "event": "door_opened", "clientTimestamp": 12524, "mode": "AUTO", "meta": {"reason": "gas_warning", "angle": 90}}
+{"receivedAt": "2026-05-16T08:06:28Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5952, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T08:06:51Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 5578, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-16T08:06:53Z", "type": "log", "event": "gas_alert", "clientTimestamp": 6992, "mode": "AUTO", "meta": {"gasValue": 200, "threshold": 200, "level": "WARNING"}}
+{"receivedAt": "2026-05-16T08:06:56Z", "type": "log", "event": "door_opened", "clientTimestamp": 10604, "mode": "AUTO", "meta": {"reason": "gas_warning", "angle": 90}}
+{"receivedAt": "2026-05-16T08:07:01Z", "type": "log", "event": "door_closed", "clientTimestamp": 15624, "mode": "AUTO", "meta": {"reason": "auto_timeout", "angle": 0}}
+{"receivedAt": "2026-05-16T08:07:01Z", "type": "log", "event": "gas_clear", "clientTimestamp": 15688, "mode": "AUTO", "meta": {}}

@@ -11,7 +11,7 @@
 // ============================================================
 const char* WIFI_SSID   = "nt";
 const char* WIFI_PASS   = "zxcvbnm@";
-const char* SERVER_HOST = "10.155.121.10";
+const char* SERVER_HOST = "10.152.235.10";
 const uint16_t SERVER_PORT = 5000;
 const char* SERVER_PATH = "/ws/esp32";
 
