@@ -1,29 +1,3 @@
-# ESP32 WebSocket Client Setup
-
-File: `esp32_client.ino`
-
-## Bước 1: Chuẩn bị Arduino IDE
-
-1. Cài đặt Arduino IDE (nếu chưa có)
-2. Thêm ESP32 board:
-   - File → Preferences → Board Manager URLs → thêm: `https://dl.espressif.com/dl/package_esp32_index.json`
-   - Tools → Board Manager → tìm "esp32" → cài "ESP32 by Espressif Systems"
-
-3. Cài đặt WebSocketsClient library:
-   - Sketch → Include Library → Manage Libraries
-   - Tìm: "WebSocketsClient"
-   - Cài: "WebSocketsClient by Links2004"
-
-4. Cài đặt ArduinoJson library:
-   - Sketch → Include Library → Manage Libraries
-   - Tìm: "ArduinoJson"
-   - Cài: "ArduinoJson by Benoit Blanchon"
-
-## Bước 2: Cấu hình
-
-Mở file `esp32_client.ino` và sửa các dòng này (section CONFIGURATION):
-
-```cpp
 const char* WIFI_SSID = "YOUR_WIFI_SSID";        // Tên Wi-Fi của bạn
 const char* WIFI_PASS = "YOUR_WIFI_PASSWORD";    // Mật khẩu Wi-Fi
 

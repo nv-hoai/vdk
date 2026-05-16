@@ -5,7 +5,7 @@ import tempfile
 import time
 import traceback
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
 import torch
 import uvicorn
@@ -36,6 +36,57 @@ device_cache = {
 }
 
 esp32_ws_client: Optional[WebSocket] = None
+
+# Simple in-memory + on-disk log storage for incoming client logs
+LOG_FILE_NAME = "server_logs.jsonl"
+LOG_FILE_PATH = os.path.join(os.path.dirname(__file__), LOG_FILE_NAME)
+received_logs: List[Dict[str, Any]] = []
+
+def append_log_record(record: Dict[str, Any]):
+    try:
+        received_logs.append(record)
+        # Persist as newline-delimited JSON for easy inspection
+        with open(LOG_FILE_PATH, "a", encoding="utf-8") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except Exception as e:
+        print(f"[LOG] Failed to persist log: {type(e).__name__}: {e}")
+
+def process_incoming_ws_text(text: str):
+    try:
+        payload = json.loads(text)
+    except Exception:
+        print(f"[WebSocket] ESP32 RX (raw): {text}")
+        return
+
+    t = payload.get("type")
+    if t == "log":
+        event = payload.get("event")
+        timestamp = payload.get("timestamp")
+        mode = payload.get("mode")
+        meta = payload.get("meta", {})
+
+        record = {
+            "receivedAt": get_utc_iso_now(),
+            "type": "log",
+            "event": event,
+            "clientTimestamp": timestamp,
+            "mode": mode,
+            "meta": meta,
+        }
+        append_log_record(record)
+
+        if event == "device_state_changed":
+            deviceId = meta.get("deviceId")
+            deviceName = meta.get("deviceName")
+            isOn = meta.get("isOn")
+            trigger = meta.get("trigger")
+            reason = meta.get("reason")
+            changed = meta.get("changed")
+            print(f"[LOG] device_state_changed - deviceId={deviceId}, deviceName={deviceName}, isOn={isOn}, trigger={trigger}, reason={reason}, changed={changed}, mode={mode}, clientTs={timestamp}")
+        else:
+            print(f"[LOG] Received log event '{event}': {payload}")
+    else:
+        print(f"[WebSocket] ESP32 RX: {text}")
 
 
 class DeviceStateRequest(BaseModel):
@@ -129,6 +180,13 @@ async def set_device_state(device_id: str, request: DeviceStateRequest):
     return device
 
 
+@app.get("/logs")
+async def get_logs(limit: int = 100):
+    if limit <= 0:
+        raise HTTPException(status_code=400, detail="limit must be positive")
+    return received_logs[-limit:]
+
+
 @app.post("/transcribe")
 async def transcribe(file: UploadFile = File(...)):
     if not file.filename or not file.filename.endswith((".wav", ".mp3", ".m4a", ".flac")):
@@ -162,7 +220,7 @@ async def websocket_esp32(websocket: WebSocket):
             # ESP32 is receive-only, just wait for connection to close
             # Client-side heartbeat handles keep-alive
             data = await websocket.receive_text()
-            print(f"[WebSocket] ESP32 RX: {data}")
+            process_incoming_ws_text(data)
     except WebSocketDisconnect:
         print("[WebSocket] ESP32 disconnected gracefully")
         esp32_ws_client = None
