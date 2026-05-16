@@ -9,8 +9,8 @@
 // ============================================================
 //  CONFIGURATION
 // ============================================================
-const char* WIFI_SSID   = "nt";
-const char* WIFI_PASS   = "zxcvbnm@";
+const char* WIFI_SSID   = "VNPT";
+const char* WIFI_PASS   = "hoainguyen";
 const char* SERVER_HOST = "10.152.235.10";
 const uint16_t SERVER_PORT = 5000;
 const char* SERVER_PATH = "/ws/esp32";
@@ -21,14 +21,13 @@ const char* SERVER_PATH = "/ws/esp32";
 const int GPIO_LAMP      = 21;
 const int GPIO_LAMP_BED1 = 25;
 const int GPIO_LAMP_BED2 = 27;
-const int GPIO_FAN       = 13;   // Servo quạt
+const int GPIO_FAN       = 17;   // Servo quạt
+const int BUZZER_PIN     = 15;   // Còi báo động
 
 #define PIR_PIN        4
 #define LIGHT_PIN      34
 #define DHT_PIN        14
 #define SERVO_DOOR_PIN 26
-#define TRIG_PIN       16
-#define ECHO_PIN       17
 #define GAS_PIN        35
 
 #define SS_PIN   5
@@ -44,13 +43,17 @@ const int   LIGHT_THRESHOLD    = 1000;   // < ngưỡng = tối
 const float TEMP_FAN_LOW       = 28.0f;  // < 28°C → tắt quạt
 const float TEMP_FAN_HIGH      = 32.0f;  // > 32°C → quạt nhanh
 const float HUMID_FAN_BOOST    = 80.0f;  // độ ẩm > 80% → tăng tốc quạt
-const int   GAS_WARNING        = 2000;   // ngưỡng khí gas nguy hiểm (analog)
-const int   GAS_DANGER         = 3000;   // ngưỡng khí gas cực nguy hiểm
+const int   GAS_WARNING        = 200;   // ngưỡng khí gas cảnh báo (analog)
+const int   GAS_DANGER         = 300;   // ngưỡng khí gas nguy hiểm → bật buzzer
 const unsigned long NO_MOTION_LAMP_OFF  = 5UL  * 60 * 1000; // 5 phút
 const unsigned long NO_MOTION_BED_OFF   = 10UL * 60 * 1000; // 10 phút
-const unsigned long DOOR_OPEN_DURATION  = 30UL * 1000;       // 30 giây
-const unsigned long INTRUDER_GRACE      = 10UL * 1000;       // 10 giây
+const unsigned long DOOR_OPEN_DURATION  = 5UL * 1000;       // 30 giây
+const unsigned long INTRUDER_GRACE      = 10UL * 1000;       // 10 giây (dùng cho RFID)
 const unsigned long AUTO_RESUME_DELAY   = 30UL * 60 * 1000;  // 30 phút → trở về AUTO
+
+// Buzzer: bíp liên tục khi gas nguy hiểm
+const int   BUZZER_BEEP_ON     = 300;    // ms bật mỗi lần bíp
+const int   BUZZER_BEEP_OFF    = 200;    // ms tắt mỗi lần bíp
 
 // ============================================================
 //  CHẾ ĐỘ HỆ THỐNG
@@ -90,13 +93,17 @@ int   lastGas       = 0;
 bool  gasAlertSent  = false;
 bool  gasDangerSent = false;
 
+// Buzzer state
+bool          buzzerActive     = false;   // đang trong chế độ báo động gas
+unsigned long lastBuzzerToggle = 0;
+bool          buzzerPinState   = false;
+
 unsigned long lastMotionTime       = 0;
 unsigned long lastSensorRead       = 0;
 unsigned long doorOpenedAt         = 0;
 unsigned long rfidAuthorizedAt     = 0;
 bool          doorIsOpen           = false;
 bool          rfidRecentlyAuth     = false;
-bool          intruderAlertSent    = false;
 
 const unsigned long SENSOR_INTERVAL = 2000;
 
@@ -115,19 +122,15 @@ void sendAck(const String& deviceId, bool isOn);
 // ============================================================
 //  LOGGING LÊN SERVER
 // ============================================================
-
-// Gửi log sự kiện kèm metadata tùy ý
-// Cách dùng: tạo JsonDocument, lấy root object, truyền vào
-void sendEventLog(const char* event, StaticJsonDocument<384>& metaDoc) {
+void sendEventLog(const char* event, const JsonDocument& metaDoc) {
     StaticJsonDocument<512> doc;
     doc["type"]      = "log";
     doc["event"]     = event;
     doc["timestamp"] = millis();
     doc["mode"]      = (systemMode == AUTO) ? "AUTO" : "MANUAL";
 
-    // Sao chép metadata vào trường "meta"
     JsonObject meta = doc.createNestedObject("meta");
-    for (JsonPair kv : metaDoc.as<JsonObject>()) {
+    for (JsonPairConst kv : metaDoc.as<JsonObjectConst>()) {
         meta[kv.key()] = kv.value();
     }
 
@@ -137,7 +140,6 @@ void sendEventLog(const char* event, StaticJsonDocument<384>& metaDoc) {
     Serial.printf("[WS TX] LOG[%s] -> %s\n", event, out.c_str());
 }
 
-// Macro tiện lợi: gửi log không có metadata
 void sendSimpleLog(const char* event, const char* detail = "") {
     StaticJsonDocument<512> doc;
     doc["type"]      = "log";
@@ -163,6 +165,55 @@ void sendAck(const String& deviceId, bool isOn) {
     serializeJson(ack, out);
     webSocket.sendTXT(out);
     Serial.printf("[WS TX] ACK -> %s = %s\n", deviceId.c_str(), isOn ? "ON" : "OFF");
+}
+
+// ============================================================
+//  BUZZER — điều khiển
+// ============================================================
+
+// Bật chế độ báo động buzzer (bíp liên tục, non-blocking)
+void buzzerAlarmStart(const char* reason) {
+    if (buzzerActive) return;
+    buzzerActive    = true;
+    buzzerPinState  = true;
+    lastBuzzerToggle = millis();
+    digitalWrite(BUZZER_PIN, HIGH);
+
+    StaticJsonDocument<128> meta;
+    meta["reason"] = reason;
+    sendEventLog("buzzer_alarm_start", meta);
+    Serial.printf("[BUZZER] BAT BAO DONG: %s\n", reason);
+}
+
+// Tắt buzzer
+void buzzerAlarmStop(const char* reason) {
+    if (!buzzerActive) return;
+    buzzerActive   = false;
+    buzzerPinState = false;
+    digitalWrite(BUZZER_PIN, LOW);
+
+    StaticJsonDocument<128> meta;
+    meta["reason"] = reason;
+    sendEventLog("buzzer_alarm_stop", meta);
+    Serial.printf("[BUZZER] TAT BAO DONG: %s\n", reason);
+}
+
+// Gọi trong loop() — xử lý bíp liên tục non-blocking
+void updateBuzzer() {
+    if (!buzzerActive) return;
+
+    unsigned long now     = millis();
+    unsigned long elapsed = now - lastBuzzerToggle;
+
+    if (buzzerPinState && elapsed >= (unsigned long)BUZZER_BEEP_ON) {
+        buzzerPinState = false;
+        digitalWrite(BUZZER_PIN, LOW);
+        lastBuzzerToggle = now;
+    } else if (!buzzerPinState && elapsed >= (unsigned long)BUZZER_BEEP_OFF) {
+        buzzerPinState = true;
+        digitalWrite(BUZZER_PIN, HIGH);
+        lastBuzzerToggle = now;
+    }
 }
 
 // ============================================================
@@ -223,7 +274,10 @@ void openDoor(const char* reason) {
     if (doorIsOpen) return;
     doorIsOpen    = true;
     doorOpenedAt  = millis();
-    servoSetAngle(90);
+    for (int angle = 0; angle <= 90; angle += 1) {
+        doorServo.write(angle);
+        delay(5);
+    }
 
     StaticJsonDocument<128> meta;
     meta["reason"] = reason;
@@ -234,7 +288,10 @@ void openDoor(const char* reason) {
 void closeDoor(const char* reason) {
     if (!doorIsOpen) return;
     doorIsOpen = false;
-    servoSetAngle(0);
+    for (int angle = 90; angle >= 0; angle -= 1) {
+        doorServo.write(angle);
+        delay(5);
+    }
 
     StaticJsonDocument<128> meta;
     meta["reason"] = reason;
@@ -242,7 +299,6 @@ void closeDoor(const char* reason) {
     sendEventLog("door_closed", meta);
 }
 
-// Tự động đóng cửa sau DOOR_OPEN_DURATION
 void updateDoor() {
     if (doorIsOpen && (millis() - doorOpenedAt >= DOOR_OPEN_DURATION)) {
         closeDoor("auto_timeout");
@@ -298,17 +354,12 @@ void handleRFID() {
 
         if (auth) {
             Serial.println("[RFID] DUOC PHEP -> Mo cua");
-            rfidRecentlyAuth  = true;
-            rfidAuthorizedAt  = millis();
-            intruderAlertSent = false;
+            rfidRecentlyAuth = true;
+            rfidAuthorizedAt = millis();
 
-            // Mở cửa
             openDoor("rfid_authorized");
-
-            // Bật đèn phòng khách
             setDeviceStateAuto("lamp-1", true, "rfid_welcome");
 
-            // Nếu nóng → bật quạt luôn
             if (!isnan(lastTemp) && lastTemp > TEMP_FAN_LOW) {
                 setFanSpeed(3, 15);
                 setDeviceStateAuto("fan-1", true, "rfid_welcome_hot");
@@ -331,7 +382,6 @@ Device* findDeviceById(const String& id) {
     return nullptr;
 }
 
-// Áp dụng trạng thái vật lý + gửi ACK + log
 void applyDeviceState(const String& id, bool isOn, const char* trigger, const char* reason) {
     Device* dev = findDeviceById(id);
     if (!dev) { Serial.printf("[ERROR] Device not found: %s\n", id.c_str()); return; }
@@ -345,16 +395,14 @@ void applyDeviceState(const String& id, bool isOn, const char* trigger, const ch
         digitalWrite(dev->gpio, isOn ? HIGH : LOW);
     }
 
-    // Gửi ACK
     sendAck(id, isOn);
 
-    // Gửi log với metadata
     StaticJsonDocument<256> meta;
     meta["deviceId"]   = id;
     meta["deviceName"] = dev->name;
     meta["isOn"]       = isOn;
-    meta["trigger"]    = trigger;   // "manual" | "auto"
-    meta["reason"]     = reason;    // mô tả lý do cụ thể
+    meta["trigger"]    = trigger;
+    meta["reason"]     = reason;
     meta["changed"]    = changed;
     sendEventLog("device_state_changed", meta);
 
@@ -362,22 +410,17 @@ void applyDeviceState(const String& id, bool isOn, const char* trigger, const ch
         dev->name, isOn ? "ON" : "OFF", trigger, reason);
 }
 
-// Điều khiển thủ công (từ WebSocket server)
 void setDeviceStateManual(const String& id, bool isOn) {
     systemMode            = MANUAL;
     lastManualCommandTime = millis();
     applyDeviceState(id, isOn, "manual", "server_command");
 }
 
-// Điều khiển tự động (từ logic cảm biến)
 void setDeviceStateAuto(const String& id, bool isOn, const char* reason) {
-    if (systemMode == MANUAL) return;   // không override khi MANUAL
+    if (systemMode == MANUAL) return;
     Device* dev = findDeviceById(id);
     if (!dev) return;
-    if (dev->isOn == isOn) return;      // không log nếu không có thay đổi
-    if (dev->isServo && isOn) {         // cập nhật tốc độ trước khi bật
-        // tốc độ đã được set ở nơi gọi nếu cần
-    }
+    if (dev->isOn == isOn) return;
     applyDeviceState(id, isOn, "auto", reason);
 }
 
@@ -401,23 +444,17 @@ void sendAllStates() {
 // ============================================================
 DHT dht(DHT_PIN, DHT11);
 
-float readDistanceCM() {
-    digitalWrite(TRIG_PIN, LOW);  delayMicroseconds(2);
-    digitalWrite(TRIG_PIN, HIGH); delayMicroseconds(10);
-    digitalWrite(TRIG_PIN, LOW);
-    long dur = pulseIn(ECHO_PIN, HIGH, 30000);
-    return dur == 0 ? -1 : dur * 0.034f / 2.0f;
-}
+
 
 void sendSensorData() {
     StaticJsonDocument<256> doc;
-    doc["type"]     = "sensor_data";
-    doc["pir"]      = lastPIR;
-    doc["light"]    = lastLight;
-    doc["gas"]      = lastGas;
+    doc["type"]         = "sensor_data";
+    doc["pir"]          = lastPIR;
+    doc["light"]        = lastLight;
+    doc["gas"]          = lastGas;
+    doc["buzzerActive"] = buzzerActive;
     if (!isnan(lastTemp))  doc["temperature"] = lastTemp;
     if (!isnan(lastHumid)) doc["humidity"]    = lastHumid;
-    if (lastDist >= 0)     doc["distance"]    = lastDist;
     String out;
     serializeJson(doc, out);
     webSocket.sendTXT(out);
@@ -429,80 +466,78 @@ void readAllSensors() {
     lastGas   = analogRead(GAS_PIN);
     lastTemp  = dht.readTemperature();
     lastHumid = dht.readHumidity();
-    lastDist  = readDistanceCM();
 
-    Serial.printf("\n[SENSOR] PIR=%d Light=%d Gas=%d Temp=%.1f Hum=%.1f Dist=%.1f\n",
+    Serial.printf("\n[SENSOR] PIR=%d Light=%d Gas=%d Temp=%.1f Hum=%.1f",
         lastPIR, lastLight, lastGas, lastTemp, lastHumid, lastDist);
 
     sendSensorData();
 }
 
 // ============================================================
-//  LOGIC TỰ ĐỘNG — chạy sau mỗi lần đọc cảm biến
+//  LOGIC TỰ ĐỘNG
 // ============================================================
 
-// --- Logic 1: Gas ---
+// --- Logic 1: Gas + Buzzer ---
 void logicGas() {
-    if (lastGas >= GAS_DANGER && !gasDangerSent) {
-        gasDangerSent = true;
-        gasAlertSent  = true;
+    if (lastGas >= GAS_DANGER) {
+        if (!gasDangerSent) {
+            gasDangerSent = true;
+            gasAlertSent  = true;
 
-        StaticJsonDocument<128> meta;
-        meta["gasValue"]   = lastGas;
-        meta["threshold"]  = GAS_DANGER;
-        meta["level"]      = "DANGER";
-        sendEventLog("gas_alert", meta);
+            StaticJsonDocument<128> meta;
+            meta["gasValue"]  = lastGas;
+            meta["threshold"] = GAS_DANGER;
+            meta["level"]     = "DANGER";
+            sendEventLog("gas_alert", meta);
 
-        // Mở cửa thoát khí
-        openDoor("gas_danger");
-        // Bật đèn toàn bộ để cảnh báo
-        setDeviceStateAuto("lamp-1",    true, "gas_danger_alert");
-        setDeviceStateAuto("lamp-bed1", true, "gas_danger_alert");
-        setDeviceStateAuto("lamp-bed2", true, "gas_danger_alert");
-        // Tắt quạt (tránh tia lửa điện)
-        setDeviceStateAuto("fan-1", false, "gas_danger_no_spark");
-        Serial.println("[GAS] !!! NGUY HIEM - Mo cua, bat den, tat quat !!!");
+            buzzerAlarmStart("gas_danger");
+            openDoor("gas_danger");
 
-    } else if (lastGas >= GAS_WARNING && !gasAlertSent) {
-        gasAlertSent = true;
-
-        StaticJsonDocument<128> meta;
-        meta["gasValue"]  = lastGas;
-        meta["threshold"] = GAS_WARNING;
-        meta["level"]     = "WARNING";
-        sendEventLog("gas_alert", meta);
-
-        openDoor("gas_warning");
-        Serial.println("[GAS] Canh bao khi gas - Mo cua thoat khi");
-
-    } else if (lastGas < GAS_WARNING) {
-        // Reset cờ khi gas về mức an toàn
-        if (gasAlertSent || gasDangerSent) {
-            sendSimpleLog("gas_clear", "Gas returned to safe level");
+            Serial.println("[GAS] !!! NGUY HIEM - Buzzer ON, Mo cua !!!");
         }
-        gasAlertSent  = false;
-        gasDangerSent = false;
+
+    } else if (lastGas >= GAS_WARNING) {
+        // Mức CẢNH BÁO: chỉ mở cửa thoát khí, chưa bật buzzer
+        if (!gasAlertSent) {
+            gasAlertSent = true;
+
+            StaticJsonDocument<128> meta;
+            meta["gasValue"]  = lastGas;
+            meta["threshold"] = GAS_WARNING;
+            meta["level"]     = "WARNING";
+            sendEventLog("gas_alert", meta);
+
+            openDoor("gas_warning");
+            Serial.println("[GAS] Canh bao khi gas - Mo cua thoat khi");
+        }
+
+    } else {
+        // Gas trở về mức an toàn → tắt buzzer + reset cờ
+        if (gasAlertSent || gasDangerSent) {
+            buzzerAlarmStop("gas_clear");
+            sendSimpleLog("gas_clear", "Gas returned to safe level");
+            gasAlertSent  = false;
+            gasDangerSent = false;
+        }
     }
 }
 
 // --- Logic 2: Nhiệt độ + Độ ẩm → Quạt ---
 void logicFan() {
     if (isnan(lastTemp)) return;
-    // Không override nếu gas nguy hiểm (quạt đang tắt vì an toàn)
-    if (gasDangerSent) return;
+    if (gasDangerSent) return;   // không bật quạt khi gas nguy hiểm
 
     bool shouldFanOn = false;
     int  step = 3, interval = 15;
 
     if (lastTemp >= TEMP_FAN_HIGH) {
         shouldFanOn = true;
-        step = 5; interval = 8;   // nhanh
+        step = 5; interval = 8;
     } else if (lastTemp >= TEMP_FAN_LOW) {
         shouldFanOn = true;
-        step = 3; interval = 15;  // vừa
+        step = 3; interval = 15;
     }
 
-    // Boost nếu độ ẩm cao
     if (!isnan(lastHumid) && lastHumid > HUMID_FAN_BOOST && shouldFanOn) {
         step     = min(step + 1, 6);
         interval = max(interval - 3, 5);
@@ -522,26 +557,22 @@ void logicFan() {
 
 // --- Logic 3: PIR + Ánh sáng → Đèn ---
 void logicLighting() {
-    bool isDark      = (lastLight < LIGHT_THRESHOLD);
-    bool motionNow   = (lastPIR == HIGH);
+    bool isDark    = (lastLight > LIGHT_THRESHOLD);
+    bool motionNow = (lastPIR == HIGH);
 
     if (motionNow) {
-        lastMotionTime    = millis();
-        rfidRecentlyAuth  = false;   // chuyển động thường, không phải từ RFID
-        intruderAlertSent = false;
+        lastMotionTime   = millis();
+        rfidRecentlyAuth = false;
     }
 
     unsigned long noMotionDuration = millis() - lastMotionTime;
 
-    // Bật đèn phòng khách: tối + có người
     if (isDark && motionNow) {
         setDeviceStateAuto("lamp-1", true, "motion_dark");
     }
-    // Tắt đèn phòng khách sau NO_MOTION_LAMP_OFF
     if (!motionNow && noMotionDuration > NO_MOTION_LAMP_OFF) {
         setDeviceStateAuto("lamp-1", false, "no_motion_timeout");
     }
-    // Tắt đèn nếu trời sáng
     if (!isDark) {
         setDeviceStateAuto("lamp-1",    false, "daylight");
         setDeviceStateAuto("lamp-bed1", false, "daylight");
@@ -558,11 +589,9 @@ void logicSleepMode() {
     Device* bed2 = findDeviceById("lamp-bed2");
     if (!bed1 || !bed2) return;
 
-    // Nếu 1 trong 2 đèn ngủ đang bật + không có ai + nhiệt độ ổn → tắt đèn, giảm quạt
     if ((bed1->isOn || bed2->isOn) && noMotionLong && tempOk) {
         setDeviceStateAuto("lamp-bed1", false, "sleep_mode_no_motion");
         setDeviceStateAuto("lamp-bed2", false, "sleep_mode_no_motion");
-        // Quạt ru ngủ nhẹ
         Device* fan = findDeviceById("fan-1");
         if (fan && fan->isOn) {
             setFanSpeed(1, 40);
@@ -576,39 +605,7 @@ void logicSleepMode() {
     }
 }
 
-// --- Logic 5: Bảo mật — PIR không có RFID ---
-void logicSecurity() {
-    bool motionNow = (lastPIR == HIGH);
-
-    // Nếu RFID vừa xác thực trong vòng INTRUDER_GRACE thì bỏ qua
-    if (rfidRecentlyAuth &&
-        (millis() - rfidAuthorizedAt < INTRUDER_GRACE)) return;
-
-    if (motionNow && !rfidRecentlyAuth && !intruderAlertSent) {
-        intruderAlertSent = true;
-
-        StaticJsonDocument<128> meta;
-        meta["pirValue"]   = lastPIR;
-        meta["lightValue"] = lastLight;
-        meta["gasValue"]   = lastGas;
-        sendEventLog("intruder_detected", meta);
-
-        // Nháy đèn phòng khách cảnh báo (blocking ngắn)
-        for (int i = 0; i < 5; i++) {
-            digitalWrite(GPIO_LAMP, HIGH); delay(200);
-            digitalWrite(GPIO_LAMP, LOW);  delay(200);
-        }
-        Serial.println("[SECURITY] Phat hien xam nhap!");
-    }
-
-    // Reset khi không còn chuyển động
-    if (!motionNow) {
-        intruderAlertSent = false;
-        rfidRecentlyAuth  = false;
-    }
-}
-
-// --- Logic 6: Tự động về AUTO sau thời gian không có lệnh manual ---
+// --- Logic 5: Tự động về AUTO ---
 void logicModeManager() {
     if (systemMode == MANUAL &&
         (millis() - lastManualCommandTime > AUTO_RESUME_DELAY)) {
@@ -618,14 +615,12 @@ void logicModeManager() {
     }
 }
 
-// Gọi tất cả logic tự động
 void runAutoLogic() {
     logicModeManager();
-    logicGas();         // Ưu tiên cao nhất
+    logicGas();        // Ưu tiên cao nhất (bao gồm buzzer)
     logicFan();
     logicLighting();
     logicSleepMode();
-    logicSecurity();
 }
 
 // ============================================================
@@ -675,6 +670,11 @@ void handleWebSocketMessage(uint8_t* payload, size_t length) {
         lastManualCommandTime = millis();
         closeDoor("server_command");
 
+    } else if (strcmp(action, "buzzer_stop") == 0) {
+        // Cho phép server tắt buzzer thủ công (ví dụ: người dùng xác nhận nguy hiểm)
+        buzzerAlarmStop("server_command");
+        sendSimpleLog("buzzer_stopped", "Buzzer stopped by server command");
+
     } else {
         Serial.printf("[CMD] Unknown action: %s\n", action);
     }
@@ -720,6 +720,8 @@ void handleSerialCommand() {
     else if (cmd == "BED1_OFF")      { setDeviceStateManual("lamp-bed1", false); }
     else if (cmd == "BED2_ON")       { setDeviceStateManual("lamp-bed2", true); }
     else if (cmd == "BED2_OFF")      { setDeviceStateManual("lamp-bed2", false); }
+    else if (cmd == "BUZZER_ON")     { buzzerAlarmStart("serial_cmd"); }
+    else if (cmd == "BUZZER_OFF")    { buzzerAlarmStop("serial_cmd"); }
     else if (cmd == "READ")          { readAllSensors(); }
     else if (cmd == "MODE_AUTO")     { systemMode = AUTO;   Serial.println("[MODE] AUTO"); }
     else if (cmd == "MODE_MANUAL")   { systemMode = MANUAL; lastManualCommandTime = millis(); Serial.println("[MODE] MANUAL"); }
@@ -732,6 +734,7 @@ void handleSerialCommand() {
     }
     else if (cmd == "STATUS") {
         Serial.printf("[STATUS] Mode: %s\n", systemMode == AUTO ? "AUTO" : "MANUAL");
+        Serial.printf("[STATUS] Buzzer: %s\n", buzzerActive ? "ACTIVE" : "OFF");
         Serial.printf("[STATUS] PIR=%d Light=%d Gas=%d Temp=%.1f Hum=%.1f Dist=%.1f\n",
             lastPIR, lastLight, lastGas, lastTemp, lastHumid, lastDist);
         for (size_t i = 0; i < DEVICE_COUNT; i++) {
@@ -746,6 +749,7 @@ void handleSerialCommand() {
         Serial.println("  LAMP1_ON/OFF            : Den phong khach");
         Serial.println("  BED1_ON/OFF             : Den phong ngu 1");
         Serial.println("  BED2_ON/OFF             : Den phong ngu 2");
+        Serial.println("  BUZZER_ON/OFF           : Coi bao dong (thu cong)");
         Serial.println("  READ                    : Doc cam bien");
         Serial.println("  STATUS                  : Xem toan bo trang thai");
         Serial.println("  MODE_AUTO / MODE_MANUAL : Doi che do");
@@ -789,13 +793,14 @@ void setup() {
     int lampPins[] = {GPIO_LAMP, GPIO_LAMP_BED1, GPIO_LAMP_BED2};
     for (int pin : lampPins) { pinMode(pin, OUTPUT); digitalWrite(pin, LOW); }
 
+    // Buzzer
+    pinMode(BUZZER_PIN, OUTPUT);
+    digitalWrite(BUZZER_PIN, LOW);
+
     // Cảm biến
     pinMode(PIR_PIN,   INPUT);
     pinMode(LIGHT_PIN, INPUT);
     pinMode(GAS_PIN,   INPUT);
-    pinMode(TRIG_PIN,  OUTPUT);
-    pinMode(ECHO_PIN,  INPUT);
-    digitalWrite(TRIG_PIN, LOW);
     dht.begin();
 
     // Servo quạt
@@ -828,6 +833,7 @@ void loop() {
     webSocket.loop();
     updateFan();
     updateDoor();
+    updateBuzzer();   // Non-blocking buzzer bíp liên tục
     handleRFID();
     handleSerialCommand();
 

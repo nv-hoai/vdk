@@ -51,6 +51,23 @@ def append_log_record(record: Dict[str, Any]):
     except Exception as e:
         print(f"[LOG] Failed to persist log: {type(e).__name__}: {e}")
 
+# Sensor data storage
+SENSOR_FILE_NAME = "server_sensor_data.jsonl"
+SENSOR_FILE_PATH = os.path.join(os.path.dirname(__file__), SENSOR_FILE_NAME)
+received_sensors: List[Dict[str, Any]] = []
+
+def append_sensor_record(record: Dict[str, Any]):
+    try:
+        received_sensors.append(record)
+        # Keep only last 500 records in memory to avoid bloat
+        if len(received_sensors) > 500:
+            received_sensors.pop(0)
+        # Persist as newline-delimited JSON
+        with open(SENSOR_FILE_PATH, "a", encoding="utf-8") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except Exception as e:
+        print(f"[SENSOR] Failed to persist sensor data: {type(e).__name__}: {e}")
+
 def process_incoming_ws_text(text: str):
     try:
         payload = json.loads(text)
@@ -85,6 +102,29 @@ def process_incoming_ws_text(text: str):
             print(f"[LOG] device_state_changed - deviceId={deviceId}, deviceName={deviceName}, isOn={isOn}, trigger={trigger}, reason={reason}, changed={changed}, mode={mode}, clientTs={timestamp}")
         else:
             print(f"[LOG] Received log event '{event}': {payload}")
+    
+    elif t == "sensor_data":
+        # Handle sensor data from ESP32
+        pir = payload.get("pir")
+        light = payload.get("light")
+        gas = payload.get("gas")
+        temperature = payload.get("temperature")
+        humidity = payload.get("humidity")
+        buzzer_active = payload.get("buzzerActive")
+
+        record = {
+            "receivedAt": get_utc_iso_now(),
+            "type": "sensor_data",
+            "pir": pir,
+            "light": light,
+            "gas": gas,
+            "temperature": temperature,
+            "humidity": humidity,
+            "buzzerActive": buzzer_active,
+        }
+        append_sensor_record(record)
+        print(f"[SENSOR] PIR={pir} Light={light} Gas={gas} Temp={temperature} Humidity={humidity} Buzzer={buzzer_active}")
+    
     else:
         print(f"[WebSocket] ESP32 RX: {text}")
 
@@ -184,7 +224,20 @@ async def set_device_state(device_id: str, request: DeviceStateRequest):
 async def get_logs(limit: int = 100):
     if limit <= 0:
         raise HTTPException(status_code=400, detail="limit must be positive")
-    return received_logs[-limit:]
+    # Return both logs and sensor data
+    logs_data = received_logs[-limit:] if received_logs else []
+    sensors_data = received_sensors[-limit:] if received_sensors else []
+    return {
+        "logs": logs_data,
+        "sensors": sensors_data,
+    }
+
+
+@app.get("/sensors")
+async def get_sensors(limit: int = 100):
+    if limit <= 0:
+        raise HTTPException(status_code=400, detail="limit must be positive")
+    return received_sensors[-limit:] if received_sensors else []
 
 
 @app.post("/transcribe")

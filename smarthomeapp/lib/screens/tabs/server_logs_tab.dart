@@ -53,6 +53,32 @@ class _ServerLogsTabState extends State<ServerLogsTab> {
     );
   }
 
+  Widget _buildSensorSummary(Map<String, dynamic> sensorData) {
+    final parts = <String>[];
+    if (sensorData['temperature'] != null) {
+      parts.add('Temp: ${sensorData['temperature'].toStringAsFixed(1)}°C');
+    }
+    if (sensorData['humidity'] != null) {
+      parts.add('Humid: ${sensorData['humidity'].toStringAsFixed(1)}%');
+    }
+    if (sensorData['light'] != null) {
+      parts.add('Light: ${sensorData['light']}');
+    }
+    if (sensorData['gas'] != null) {
+      parts.add('Gas: ${sensorData['gas']}');
+    }
+    if (sensorData['pir'] != null) {
+      parts.add('PIR: ${sensorData['pir'] == 1 ? 'Motion' : 'Still'}');
+    }
+    if (sensorData['buzzerActive'] != null) {
+      parts.add('Buzzer: ${sensorData['buzzerActive'] ? 'ON' : 'OFF'}');
+    }
+    return Text(
+      parts.join(' • '),
+      style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -108,45 +134,87 @@ class _ServerLogsTabState extends State<ServerLogsTab> {
                   itemBuilder: (context, index) {
                     // show newest first
                     final log = widget.logs[widget.logs.length - 1 - index];
-                    final event = log['event'] ?? log['type'] ?? 'log';
-                    final clientTs = log['clientTimestamp'] ?? log['timestamp'];
+                    final logType = log['type'] ?? '';
                     final receivedAt = log['receivedAt'];
-                    final ts = _parseTimestamp(receivedAt) ?? _parseTimestamp(clientTs) ?? DateTime.now();
+                    final ts = _parseTimestamp(receivedAt) ?? DateTime.now();
 
-                    final meta = (log['meta'] is Map) ? Map<String, dynamic>.from(log['meta']) : <String, dynamic>{};
+                    if (logType == 'sensor_data') {
+                      // Render sensor data card
+                      final temp = log['temperature'];
+                      final humid = log['humidity'];
+                      final hasTemp = temp != null && !temp.isNaN;
+                      
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        elevation: 2,
+                        shadowColor: Colors.black12,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: Colors.green.shade200),
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.green.shade50,
+                            child: const Icon(Icons.sensors, color: Colors.green),
+                          ),
+                          title: Text(
+                            'Sensor Data',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 6),
+                              Text(
+                                '${ts.year}-${ts.month.toString().padLeft(2, '0')}-${ts.day.toString().padLeft(2, '0')} ${ts.hour.toString().padLeft(2, '0')}:${ts.minute.toString().padLeft(2, '0')}:${ts.second.toString().padLeft(2, '0')}',
+                                style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                              ),
+                              const SizedBox(height: 6),
+                              _buildSensorSummary(log),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      // Render log event card
+                      final event = log['event'] ?? log['type'] ?? 'event';
+                      final clientTs = log['clientTimestamp'] ?? log['timestamp'];
+                      final meta = (log['meta'] is Map) ? Map<String, dynamic>.from(log['meta']) : <String, dynamic>{};
 
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      elevation: 2,
-                      shadowColor: Colors.black12,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: Colors.grey.shade200),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blue.shade50,
-                          child: const Icon(Icons.event, color: Colors.blue),
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        elevation: 2,
+                        shadowColor: Colors.black12,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: Colors.grey.shade200),
                         ),
-                        title: Text(
-                          event,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.blue.shade50,
+                            child: const Icon(Icons.event, color: Colors.blue),
+                          ),
+                          title: Text(
+                            event,
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 6),
+                              Text(
+                                '${ts.year}-${ts.month.toString().padLeft(2, '0')}-${ts.day.toString().padLeft(2, '0')} ${ts.hour.toString().padLeft(2, '0')}:${ts.minute.toString().padLeft(2, '0')}:${ts.second.toString().padLeft(2, '0')}',
+                                style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                              ),
+                              const SizedBox(height: 6),
+                              _buildMetaSummary(meta),
+                            ],
+                          ),
                         ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 6),
-                            Text(
-                              '${ts.year}-${ts.month.toString().padLeft(2, '0')}-${ts.day.toString().padLeft(2, '0')} ${ts.hour.toString().padLeft(2, '0')}:${ts.minute.toString().padLeft(2, '0')}:${ts.second.toString().padLeft(2, '0')}',
-                              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-                            ),
-                            const SizedBox(height: 6),
-                            _buildMetaSummary(meta),
-                          ],
-                        ),
-                      ),
-                    );
+                      );
+                    }
                   },
                 ),
         ),

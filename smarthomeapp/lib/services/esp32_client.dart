@@ -67,8 +67,51 @@ class Esp32Client {
     }
 
     final dynamic decoded = jsonDecode(response.body);
+    
+    // Handle new response format: { "logs": [...], "sensors": [...] }
+    if (decoded is Map<String, dynamic>) {
+      final logs = (decoded['logs'] as List?)?.whereType<Map<String, dynamic>>().toList() ?? [];
+      final sensors = (decoded['sensors'] as List?)?.whereType<Map<String, dynamic>>().toList() ?? [];
+      
+      // Merge logs and sensors with receivedAt timestamp for sorting
+      List<Map<String, dynamic>> merged = [];
+      merged.addAll(logs);
+      merged.addAll(sensors);
+      
+      // Sort by receivedAt descending
+      merged.sort((a, b) {
+        final tsA = a['receivedAt'] ?? a['timestamp'] ?? '';
+        final tsB = b['receivedAt'] ?? b['timestamp'] ?? '';
+        return tsB.toString().compareTo(tsA.toString());
+      });
+      
+      return merged;
+    }
+    
+    // Fallback for old format: direct list
     if (decoded is! List) {
       throw Exception('Invalid logs response');
+    }
+
+    return decoded
+        .whereType<Map<String, dynamic>>()
+        .map((m) => Map<String, dynamic>.from(m))
+        .toList();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchSensors({int limit = 100}) async {
+    final uri = Uri.parse('$baseUrl/sensors?limit=$limit');
+    final response = await _httpClient
+        .get(uri)
+        .timeout(const Duration(seconds: 5));
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to fetch sensors (${response.statusCode})');
+    }
+
+    final dynamic decoded = jsonDecode(response.body);
+    if (decoded is! List) {
+      throw Exception('Invalid sensors response');
     }
 
     return decoded
