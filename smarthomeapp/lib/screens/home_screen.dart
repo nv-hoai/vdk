@@ -8,6 +8,7 @@ import '../services/esp32_client.dart';
 import 'tabs/device_state_log_tab.dart';
 import 'tabs/manual_control_tab.dart';
 import 'tabs/voice_control_tab.dart';
+import 'tabs/server_logs_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,11 +26,27 @@ class _HomeScreenState extends State<HomeScreen>
   String? _error;
   List<Device> _devices = const [];
   List<DeviceLog> _deviceLogs = [];
+  List<Map<String, dynamic>> _serverLogs = [];
 
   @override
   void initState() {
     super.initState();
     _loadDevices();
+  }
+
+  Future<void> _loadServerLogs() async {
+    try {
+      final logs = await _client.fetchLogs(limit: 200);
+      if (!mounted) return;
+      setState(() {
+        _serverLogs = logs;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load server logs: $error')),
+      );
+    }
   }
 
   @override
@@ -130,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen>
       );
     }
 
-    final titles = ['Voice Control', 'Smart Home', 'Device Log'];
+    final titles = ['Voice Control', 'Smart Home', 'Device Log', 'Server Log'];
     return Scaffold(
       appBar: AppBar(
         title: Text(titles[_currentIndex]),
@@ -156,6 +173,15 @@ class _HomeScreenState extends State<HomeScreen>
               });
             },
           ),
+          ServerLogsTab(
+            logs: _serverLogs,
+            onRefresh: _loadServerLogs,
+            onClear: () {
+              setState(() {
+                _serverLogs.clear();
+              });
+            },
+          ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -164,6 +190,10 @@ class _HomeScreenState extends State<HomeScreen>
           setState(() {
             _currentIndex = index;
           });
+          // Load server logs when user opens the Server Log tab
+          if (index == 3) {
+            _loadServerLogs();
+          }
         },
         items: const [
           BottomNavigationBarItem(
@@ -180,6 +210,11 @@ class _HomeScreenState extends State<HomeScreen>
             icon: Icon(Icons.history_outlined),
             activeIcon: Icon(Icons.history),
             label: 'Log',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.cloud_outlined),
+            activeIcon: Icon(Icons.cloud),
+            label: 'Server',
           ),
         ],
       ),

@@ -55,4 +55,25 @@ class Esp32Client {
 
     return Device.fromJson(decoded);
   }
+
+  Future<List<Map<String, dynamic>>> fetchLogs({int limit = 100}) async {
+    final uri = Uri.parse('$baseUrl/logs?limit=$limit');
+    final response = await _httpClient
+        .get(uri)
+        .timeout(const Duration(seconds: 5));
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to fetch logs (${response.statusCode})');
+    }
+
+    final dynamic decoded = jsonDecode(response.body);
+    if (decoded is! List) {
+      throw Exception('Invalid logs response');
+    }
+
+    return decoded
+        .whereType<Map<String, dynamic>>()
+        .map((m) => Map<String, dynamic>.from(m))
+        .toList();
+  }
 }
