@@ -54,8 +54,14 @@ class _VoiceControlTabState extends State<VoiceControlTab> {
   void _onSpeechStatus(String status) {
     if (status == 'listening') {
       widget.onListeningStarted();
+      if (mounted) {
+        setState(() => _isListening = true);
+      }
     } else if (status == 'done' || status == 'notListening') {
       widget.onListeningStopped();
+      if (mounted) {
+        setState(() => _isListening = false);
+      }
     }
   }
 
