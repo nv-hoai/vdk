@@ -587,3 +587,7 @@
 {"receivedAt": "2026-05-20T04:13:24Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 1779250404348, "mode": "AUTO", "meta": {}}
 {"receivedAt": "2026-05-20T08:11:46Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 1779264706927, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "isOn": true, "reason": "server_command"}}
 {"receivedAt": "2026-05-20T08:12:08Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 1779264728554, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "isOn": false, "reason": "server_command"}}
+{"receivedAt": "2026-05-20T08:28:56Z", "type": "log", "event": "esp32_connected", "clientTimestamp": 1779265736553, "mode": "AUTO", "meta": {}}
+{"receivedAt": "2026-05-20T08:30:00Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 1779265800760, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "isOn": true, "reason": "server_command"}}
+{"receivedAt": "2026-05-20T08:30:23Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 1779265823288, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "isOn": true, "reason": "server_command"}}
+{"receivedAt": "2026-05-20T08:48:47Z", "type": "log", "event": "device_state_changed", "clientTimestamp": 1779266927625, "mode": "AUTO", "meta": {"deviceId": "lamp-1", "isOn": false, "reason": "server_command"}}

@@ -8,7 +8,6 @@ import traceback
 from datetime import datetime, timezone
 from typing import Optional, List, Dict, Any
 
-import torch
 import uvicorn
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -392,8 +391,6 @@ async def websocket_app(websocket: WebSocket):
 async def on_startup():
     print(f"FastAPI running on http://localhost:{FASTAPI_PORT}")
     print(f"ESP32 WebSocket endpoint: ws://localhost:{FASTAPI_PORT}{WS_ESP32_PATH}")
-    device = "CUDA" if torch.cuda.is_available() else "CPU"
-    print(f"Using {device} for inference")
     # Start UDP discovery responder in background thread for LAN discovery
     try:
         t = threading.Thread(target=_udp_discovery_responder, args=(DISCOVERY_PORT,), daemon=True)
