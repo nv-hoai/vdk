@@ -1,6 +1,9 @@
 #include <WiFi.h>
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
+#include <WebServer.h>
+#include <Preferences.h>
+#include <WiFiUdp.h>
 #include <ESP32Servo.h>
 #include <DHT.h>
 #include <SPI.h>
@@ -9,11 +12,23 @@
 // ============================================================
 //  CONFIGURATION
 // ============================================================
+// Default fallback creds (used only if no saved credentials exist)
 const char* WIFI_SSID   = "VNPT";
 const char* WIFI_PASS   = "hoainguyen";
-const char* SERVER_HOST = "10.152.235.10";
-const uint16_t SERVER_PORT = 5000;
-const char* SERVER_PATH = "/ws/esp32";
+
+// Server info will be discovered via UDP; defaults provided as fallback
+String SERVER_HOST = "10.152.235.10";
+uint16_t SERVER_PORT = 5000;
+String SERVER_PATH = "/ws/esp32";
+
+// Preferences (NVS) for storing WiFi creds
+Preferences prefs;
+
+// Captive portal webserver
+WebServer portalServer(80);
+
+// UDP for discovery
+WiFiUDP udp;
 
 // ============================================================
 //  CHÂN GPIO
@@ -116,7 +131,6 @@ WebSocketsClient webSocket;
 //  FORWARD DECLARATIONS
 // ============================================================
 void setDeviceStateAuto(const String& id, bool isOn, const char* reason);
-void sendLog(const char* event, JsonObject& meta);
 void sendAck(const String& deviceId, bool isOn);
 
 // ============================================================
@@ -766,19 +780,133 @@ void handleSerialCommand() {
 //  WIFI
 // ============================================================
 void setupWiFi() {
-    Serial.printf("[WiFi] Connecting to %s\n", WIFI_SSID);
+    Serial.println("[WiFi] Attempting to connect using saved credentials or defaults");
+
+    // Try to load saved credentials from NVS
+    String ssid = prefs.getString("ssid", "");
+    String pass = prefs.getString("pass", "");
+
     WiFi.mode(WIFI_STA);
-    WiFi.begin(WIFI_SSID, WIFI_PASS);
+    if (ssid.length() > 0) {
+        Serial.printf("[WiFi] Trying saved SSID: %s\n", ssid.c_str());
+        WiFi.begin(ssid.c_str(), pass.c_str());
+    } else {
+        Serial.printf("[WiFi] No saved creds, using default SSID: %s\n", WIFI_SSID);
+        WiFi.begin(WIFI_SSID, WIFI_PASS);
+    }
+
     int attempts = 0;
     while (WiFi.status() != WL_CONNECTED && attempts < 20) {
         delay(500); Serial.print("."); attempts++;
     }
     Serial.println();
     if (WiFi.status() != WL_CONNECTED) {
-        Serial.println("[WiFi] Failed! Restarting...");
-        delay(3000); ESP.restart();
+        Serial.println("[WiFi] Failed to connect, starting captive portal...");
+        // Start captive portal to collect SSID/pass
+        startCaptivePortal();
+        // startCaptivePortal will block until credentials saved and device restarts
+        return;
     }
+
     Serial.printf("[WiFi] Connected! IP: %s\n", WiFi.localIP().toString().c_str());
+
+    // After connecting to WiFi, attempt UDP discovery to find server
+    discoverServerViaUDP();
+}
+
+
+void startCaptivePortal() {
+    // Start AP
+    const char* apName = "ESP32-Setup";
+    Serial.printf("[Portal] Starting AP: %s\n", apName);
+    WiFi.softAP(apName);
+    IPAddress ip = WiFi.softAPIP();
+    Serial.printf("[Portal] AP IP: %s\n", ip.toString().c_str());
+
+    // Simple captive portal form
+    portalServer.on("/", HTTP_GET, []() {
+        String page = "<html><body><h3>ESP32 Setup</h3>";
+        page += "<form method=POST action=/save>";
+        page += "SSID:<input name=ssid><br>Password:<input name=pass><br>";
+        page += "<input type=submit value=Save></form></body></html>";
+        portalServer.send(200, "text/html", page);
+    });
+
+    portalServer.on("/save", HTTP_POST, []() {
+        String ssid = portalServer.arg("ssid");
+        String pass = portalServer.arg("pass");
+        if (ssid.length() > 0) {
+            prefs.begin("wifi", false);
+            prefs.putString("ssid", ssid);
+            prefs.putString("pass", pass);
+            prefs.end();
+            portalServer.send(200, "text/html", "Saved. Restarting...");
+            delay(1000);
+            ESP.restart();
+        } else {
+            portalServer.send(400, "text/plain", "Missing SSID");
+        }
+    });
+
+    portalServer.begin();
+    Serial.println("[Portal] Captive portal running. Connect to AP and open browser.");
+    while (true) {
+        portalServer.handleClient();
+        delay(10);
+    }
+}
+
+
+void discoverServerViaUDP() {
+    Serial.println("[Discovery] Sending UDP broadcast to find server...");
+    const char* discoveryMsg = "DISCOVER_SMARTHOME";
+    const int timeoutMs = 2000;
+
+    udp.begin(0);
+    udp.beginPacket("255.255.255.255", 5001);
+    udp.write((const uint8_t*)discoveryMsg, strlen(discoveryMsg));
+    udp.endPacket();
+
+    unsigned long start = millis();
+    while (millis() - start < (unsigned long)timeoutMs) {
+        int packetSize = udp.parsePacket();
+        if (packetSize) {
+            char buf[512];
+            int len = udp.read(buf, sizeof(buf) - 1);
+            if (len > 0) {
+                buf[len] = 0;
+                Serial.printf("[Discovery] Received: %s\n", buf);
+                StaticJsonDocument<256> doc;
+                DeserializationError err = deserializeJson(doc, buf);
+                if (!err) {
+                    const char* baseUrl = doc["baseUrl"];
+                    const char* wsPath = doc["wsPath"] | "/ws/esp32";
+                    if (baseUrl) {
+                        // parse host and optional port
+                        String s = String(baseUrl);
+                        // expected format ws://1.2.3.4:5000
+                        int p1 = s.indexOf("://");
+                        int colon = s.lastIndexOf(':');
+                        if (colon > p1) {
+                            String host = s.substring(p1 + 3, colon);
+                            String portStr = s.substring(colon + 1);
+                            SERVER_HOST = host;
+                            SERVER_PORT = portStr.toInt();
+                        } else {
+                            SERVER_HOST = s.substring(p1 + 3);
+                        }
+                        SERVER_PATH = String(wsPath);
+                        Serial.printf("[Discovery] Server set to %s:%u%s\n", SERVER_HOST.c_str(), SERVER_PORT, SERVER_PATH.c_str());
+                    }
+                }
+                udp.stop();
+                return;
+            }
+        }
+        delay(100);
+    }
+    udp.stop();
+    Serial.println("[Discovery] No server discovered via UDP; using defaults.");
 }
 
 // ============================================================
@@ -788,6 +916,9 @@ void setup() {
     Serial.begin(115200);
     delay(1000);
     Serial.println("\n=== Smart Home ESP32 Unified ===");
+
+    // Initialize preferences (NVS) for WiFi storage
+    prefs.begin("wifi", true);
 
     // GPIO đèn
     int lampPins[] = {GPIO_LAMP, GPIO_LAMP_BED1, GPIO_LAMP_BED2};

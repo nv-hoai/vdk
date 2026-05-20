@@ -74,3 +74,4 @@ esp32_client/*.dll
 esp32_client/*.exe
 esp32_client/*.out
 esp32_client/*.dSYM/
+esp32_client/__pycache__/
