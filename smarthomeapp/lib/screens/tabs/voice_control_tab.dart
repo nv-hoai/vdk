@@ -102,7 +102,7 @@ class _VoiceControlTabState extends State<VoiceControlTab> {
     }
   }
 
-  void _onSpeechResult(result) {
+  void _onSpeechResult(dynamic result) {
     final dynamicResult = result as dynamic;
     final words = (dynamicResult.recognizedWords ?? '').toString();
     final isFinal = dynamicResult.finalResult == true;
@@ -178,7 +178,7 @@ class _VoiceControlTabState extends State<VoiceControlTab> {
                   boxShadow: [
                     BoxShadow(
                       color: (_isListening ? Colors.red : Theme.of(context).colorScheme.primary)
-                          .withOpacity(0.4),
+                          .withAlpha((0.4 * 255).round()),
                       blurRadius: _isListening ? 30 : 20,
                       spreadRadius: _isListening ? 10 : 5,
                     ),
@@ -205,7 +205,7 @@ class _VoiceControlTabState extends State<VoiceControlTab> {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withAlpha((0.05 * 255).round()),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -242,11 +242,11 @@ class _VoiceControlTabState extends State<VoiceControlTab> {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 24),
               padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary.withAlpha((0.1 * 255).round()),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.secondary.withAlpha((0.3 * 255).round()),
                 ),
               ),
               child: Text(

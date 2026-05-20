@@ -77,7 +77,7 @@ class Esp32Client {
           final rid = decoded['requestId']?.toString();
           if (rid != null) {
             final completer = _pendingRequests.remove(rid);
-            completer?..complete(decoded);
+            completer?.complete(decoded);
             return;
           }
         }

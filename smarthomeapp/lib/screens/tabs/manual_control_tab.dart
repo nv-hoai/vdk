@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/device.dart';
-import '../../services/esp32_client.dart';
+
 
 class ManualControlTab extends StatefulWidget {
   const ManualControlTab({
@@ -65,11 +65,11 @@ class _ManualControlTabState extends State<ManualControlTab> {
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
           elevation: device.isOn ? 8 : 2,
-          shadowColor: device.isOn ? Theme.of(context).colorScheme.primary.withOpacity(0.4) : Colors.black12,
+          shadowColor: device.isOn ? Theme.of(context).colorScheme.primary.withAlpha((0.4 * 255).round()) : Colors.black12,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: BorderSide(
-              color: device.isOn ? Theme.of(context).colorScheme.primary.withOpacity(0.5) : Colors.transparent,
+              side: BorderSide(
+              color: device.isOn ? Theme.of(context).colorScheme.primary.withAlpha((0.5 * 255).round()) : Colors.transparent,
               width: 1.5,
             ),
           ),
@@ -77,10 +77,10 @@ class _ManualControlTabState extends State<ManualControlTab> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               gradient: device.isOn
-                  ? LinearGradient(
+                      ? LinearGradient(
                       colors: [
-                        Theme.of(context).colorScheme.primary.withOpacity(0.05),
-                        Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                        Theme.of(context).colorScheme.primary.withAlpha((0.05 * 255).round()),
+                        Theme.of(context).colorScheme.secondary.withAlpha((0.1 * 255).round()),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -92,8 +92,8 @@ class _ManualControlTabState extends State<ManualControlTab> {
               leading: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: device.isOn 
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.15) 
+                    color: device.isOn 
+                      ? Theme.of(context).colorScheme.primary.withAlpha((0.15 * 255).round()) 
                       : Colors.grey.shade100,
                   shape: BoxShape.circle,
                 ),

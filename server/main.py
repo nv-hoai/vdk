@@ -416,9 +416,17 @@ async def on_startup():
 
 
 if __name__ == "__main__":
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=FASTAPI_PORT,
-        reload=False,
-    )
+    try:
+        uvicorn.run(
+            "main:app",
+            host="0.0.0.0",
+            port=FASTAPI_PORT,
+            reload=False,
+        )
+    except (KeyboardInterrupt, SystemExit):
+        # Graceful exit on Ctrl+C without printing full traceback
+        print("[SERVER] Shutdown requested (KeyboardInterrupt). Exiting.")
+    except Exception as e:
+        # Unexpected exceptions should still surface for diagnostics
+        print(f"[SERVER] Unhandled exception when running server: {type(e).__name__}: {e}")
+        raise

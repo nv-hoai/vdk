@@ -140,9 +140,7 @@ class _ServerLogsTabState extends State<ServerLogsTab> {
 
                     if (logType == 'sensor_data') {
                       // Render sensor data card
-                      final temp = log['temperature'];
-                      final humid = log['humidity'];
-                      final hasTemp = temp != null && !temp.isNaN;
+                      // temperature/humidity are rendered inside _buildSensorSummary
                       
                       return Card(
                         margin: const EdgeInsets.only(bottom: 12),
@@ -179,7 +177,7 @@ class _ServerLogsTabState extends State<ServerLogsTab> {
                     } else {
                       // Render log event card
                       final event = log['event'] ?? log['type'] ?? 'event';
-                      final clientTs = log['clientTimestamp'] ?? log['timestamp'];
+                      // final clientTs removed (not used)
                       final meta = (log['meta'] is Map) ? Map<String, dynamic>.from(log['meta']) : <String, dynamic>{};
 
                       return Card(

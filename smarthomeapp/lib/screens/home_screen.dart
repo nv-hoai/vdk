@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
+
 
 import '../config/app_config.dart';
 import '../config/voice_commands.dart';
@@ -538,21 +538,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  String _buildSubtitle(Device device) {
-    final status = device.isOn ? 'On' : 'Off';
-    final typeLabel = device.type.isNotEmpty ? device.type : 'unknown';
-    final updatedAt = device.updatedAt;
-    if (updatedAt == null) {
-      return '$status • $typeLabel';
-    }
-
-    final local = updatedAt.toLocal();
-    String twoDigit(int value) => value.toString().padLeft(2, '0');
-    final timestamp =
-        '${local.year}-${twoDigit(local.month)}-${twoDigit(local.day)} '
-        '${twoDigit(local.hour)}:${twoDigit(local.minute)}';
-    return '$status • $typeLabel • $timestamp';
-  }
+  // _buildSubtitle removed — not used
 }
 
 class _SpeechCommand {

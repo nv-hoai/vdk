@@ -185,10 +185,10 @@ class SensorTab extends StatelessWidget {
   }
 
   Widget _metricRow(String label, String value, IconData icon, Color color) {
-    return Container(
+      return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withAlpha((0.08 * 255).round()),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(

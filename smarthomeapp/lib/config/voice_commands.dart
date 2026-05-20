@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 /// Vietnamese voice commands configuration for Whisper AI transcription
 class VoiceCommandConfig {
