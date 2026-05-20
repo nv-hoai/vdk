@@ -3,7 +3,6 @@ import json
 import os
 import socket
 import threading
-import tempfile
 import time
 import traceback
 from datetime import datetime, timezone
@@ -11,8 +10,7 @@ from typing import Optional, List, Dict, Any
 
 import torch
 import uvicorn
-import whisper
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, HTTPException
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -26,11 +24,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Configuration
 FASTAPI_PORT = int(os.getenv("FASTAPI_PORT", "5000"))
-WHISPER_MODEL_NAME = os.getenv("WHISPER_MODEL", "small")
 DISCOVERY_PORT = int(os.getenv("DISCOVERY_PORT", "5001"))
-
 DEVICE_CACHE_TTL_SEC = 3
+
+# WebSocket message types
+MSG_TYPE_LOG = "log"
+MSG_TYPE_SENSOR = "sensor_data"
+MSG_TYPE_SNAPSHOT = "snapshot"
+MSG_TYPE_ACK = "ack"
+MSG_TYPE_LOGS_RESPONSE = "logs_response"
+
+# Action types
+ACTION_SET_STATE = "set_state"
+ACTION_GET_LOGS = "get_logs"
+
+# Event types
+EVENT_DEVICE_STATE_CHANGED = "device_state_changed"
+EVENT_DISCOVER_SMARTHOME = "DISCOVER_SMARTHOME"
+
+# WebSocket paths
+WS_ESP32_PATH = "/ws/esp32"
+WS_APP_PATH = "/ws/app"
+
+# Device types
+DEVICE_TYPE_LIGHT = "light"
+DEVICE_TYPE_FAN = "fan"
+DEVICE_TYPE_UNKNOWN = "unknown"
 
 device_cache = {
     "devices": None,
@@ -59,18 +80,37 @@ def append_log_record(record: Dict[str, Any]):
 SENSOR_FILE_NAME = "server_sensor_data.jsonl"
 SENSOR_FILE_PATH = os.path.join(os.path.dirname(__file__), SENSOR_FILE_NAME)
 received_sensors: List[Dict[str, Any]] = []
+MAX_SENSOR_RECORDS = 500
 
 def append_sensor_record(record: Dict[str, Any]):
     try:
         received_sensors.append(record)
         # Keep only last 500 records in memory to avoid bloat
-        if len(received_sensors) > 500:
+        if len(received_sensors) > MAX_SENSOR_RECORDS:
             received_sensors.pop(0)
         # Persist as newline-delimited JSON
         with open(SENSOR_FILE_PATH, "a", encoding="utf-8") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
     except Exception as e:
         print(f"[SENSOR] Failed to persist sensor data: {type(e).__name__}: {e}")
+
+async def broadcast_to_app_clients(payload_dict: Dict[str, Any]):
+    """Broadcast a message to all connected app clients."""
+    if not app_ws_clients:
+        return
+    
+    payload_json = json.dumps(payload_dict, ensure_ascii=False)
+    for ws in list(app_ws_clients):
+        async def _safe_send(w: WebSocket, payload: str):
+            try:
+                await w.send_text(payload)
+            except Exception:
+                try:
+                    app_ws_clients.remove(w)
+                except ValueError:
+                    pass
+        
+        asyncio.create_task(_safe_send(ws, payload_json))
 
 def process_incoming_ws_text(text: str):
     try:
@@ -80,7 +120,7 @@ def process_incoming_ws_text(text: str):
         return
 
     t = payload.get("type")
-    if t == "log":
+    if t == MSG_TYPE_LOG:
         event = payload.get("event")
         timestamp = payload.get("timestamp")
         mode = payload.get("mode")
@@ -98,26 +138,10 @@ def process_incoming_ws_text(text: str):
 
         # Broadcast the log record to connected app clients (realtime)
         if app_ws_clients:
-            payload_json = json.dumps(record, ensure_ascii=False)
-            try:
-                print(f"[BROADCAST] log -> {len(app_ws_clients)} app clients")
-            except Exception:
-                pass
-            # send to a copy to avoid mutation while iterating
-            for ws in list(app_ws_clients):
-                # Schedule a safe send task that will remove dead sockets
-                async def _safe_send(w: WebSocket, payload: str):
-                    try:
-                        await w.send_text(payload)
-                    except Exception:
-                        try:
-                            app_ws_clients.remove(w)
-                        except ValueError:
-                            pass
+            print(f"[BROADCAST] log -> {len(app_ws_clients)} app clients")
+        asyncio.create_task(broadcast_to_app_clients(record))
 
-                asyncio.create_task(_safe_send(ws, payload_json))
-
-        if event == "device_state_changed":
+        if event == EVENT_DEVICE_STATE_CHANGED:
             deviceId = meta.get("deviceId")
             deviceName = meta.get("deviceName")
             isOn = meta.get("isOn")
@@ -128,7 +152,7 @@ def process_incoming_ws_text(text: str):
         else:
             print(f"[LOG] Received log event '{event}': {payload}")
     
-    elif t == "sensor_data":
+    elif t == MSG_TYPE_SENSOR:
         # Handle sensor data from ESP32
         pir = payload.get("pir")
         light = payload.get("light")
@@ -148,24 +172,10 @@ def process_incoming_ws_text(text: str):
             "buzzerActive": buzzer_active,
         }
         append_sensor_record(record)
-        # Broadcast sensor data to connected app clients in realtime.
+        # Broadcast sensor data to connected app clients in realtime
         if app_ws_clients:
-            payload_json = json.dumps(record, ensure_ascii=False)
-            try:
-                print(f"[BROADCAST] sensor_data -> {len(app_ws_clients)} app clients")
-            except Exception:
-                pass
-            for ws in list(app_ws_clients):
-                async def _safe_send(w: WebSocket, payload: str):
-                    try:
-                        await w.send_text(payload)
-                    except Exception:
-                        try:
-                            app_ws_clients.remove(w)
-                        except ValueError:
-                            pass
-
-                asyncio.create_task(_safe_send(ws, payload_json))
+            print(f"[BROADCAST] sensor_data -> {len(app_ws_clients)} app clients")
+        asyncio.create_task(broadcast_to_app_clients(record))
         print(f"[SENSOR] PIR={pir} Light={light} Gas={gas} Temp={temperature} Humidity={humidity} Buzzer={buzzer_active}")
     
     else:
@@ -193,11 +203,11 @@ def _udp_discovery_responder(bind_port: int = DISCOVERY_PORT):
                 except Exception:
                     continue
 
-                if msg == "DISCOVER_SMARTHOME":
+                if msg == EVENT_DISCOVER_SMARTHOME:
                     host_ip = addr[0]
                     payload = json.dumps({
                         "baseUrl": f"ws://{host_ip}:{FASTAPI_PORT}",
-                        "wsPath": "/ws/esp32",
+                        "wsPath": WS_ESP32_PATH,
                         "info": "smarthome-discovery",
                     })
                     try:
@@ -216,10 +226,6 @@ def _udp_discovery_responder(bind_port: int = DISCOVERY_PORT):
 
 class DeviceStateRequest(BaseModel):
     isOn: bool
-
-
-class TranscribeResponse(BaseModel):
-    text: str
 
 
 def get_utc_iso_now():
@@ -241,10 +247,10 @@ def get_devices():
     are deprecated in this WS-only workflow for the app.
     """
     devices = [
-        create_device_json("lamp-1", "Phong khach", "light", False),
-        create_device_json("fan-1", "Quat", "fan", False),
-        create_device_json("lamp-bed1", "Phong ngu 1", "light", False),
-        create_device_json("lamp-bed2", "Phong ngu 2", "light", False),
+        create_device_json("lamp-1", "Phong khach", DEVICE_TYPE_LIGHT, False),
+        create_device_json("fan-1", "Quat", DEVICE_TYPE_FAN, False),
+        create_device_json("lamp-bed1", "Phong ngu 1", DEVICE_TYPE_LIGHT, False),
+        create_device_json("lamp-bed2", "Phong ngu 2", DEVICE_TYPE_LIGHT, False),
     ]
 
     for device in devices:
@@ -260,7 +266,7 @@ async def send_command_to_esp32(device_id: str, is_on: bool):
         return
 
     try:
-        command = {"action": "set_state", "deviceId": device_id, "isOn": is_on}
+        command = {"action": ACTION_SET_STATE, "deviceId": device_id, "isOn": is_on}
         command_json = json.dumps(command)
         await esp32_ws_client.send_text(command_json)
     except Exception as error:
@@ -276,28 +282,10 @@ async def health():
     return {"status": "ok", "uptimeSec": int(time.time())}
 
 
-@app.post("/transcribe")
-async def transcribe(file: UploadFile = File(...)):
-    if not file.filename or not file.filename.endswith((".wav", ".mp3", ".m4a", ".flac")):
-        raise HTTPException(status_code=400, detail="Unsupported audio format")
-
-    try:
-        contents = await file.read()
-
-        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
-            tmp.write(contents)
-            tmp_path = tmp.name
-
-        model = whisper.load_model(WHISPER_MODEL_NAME)
-        result = model.transcribe(tmp_path, language='vi')
-        os.unlink(tmp_path)
-
-        return TranscribeResponse(text=result.get("text", ""))
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
 
 
-@app.websocket("/ws/esp32")
+
+@app.websocket(WS_ESP32_PATH)
 async def websocket_esp32(websocket: WebSocket):
     global esp32_ws_client
     await websocket.accept()
@@ -322,7 +310,7 @@ async def websocket_esp32(websocket: WebSocket):
             esp32_ws_client = None
 
 
-@app.websocket("/ws/app")
+@app.websocket(WS_APP_PATH)
 async def websocket_app(websocket: WebSocket):
     """WebSocket endpoint for client apps (Flutter). Multiple clients supported.
     The server will push realtime log and sensor records to connected apps.
@@ -339,7 +327,7 @@ async def websocket_app(websocket: WebSocket):
             devices = []
 
         snapshot = {
-            "type": "snapshot",
+            "type": MSG_TYPE_SNAPSHOT,
             "devices": devices,
             "logs": received_logs[-100:],
             "sensors": received_sensors[-100:],
@@ -361,25 +349,25 @@ async def websocket_app(websocket: WebSocket):
             action = payload.get("action")
             request_id = payload.get("requestId")
 
-            if action == "set_state":
+            if action == ACTION_SET_STATE:
                 device_id = payload.get("deviceId")
                 is_on = payload.get("isOn")
                 # Forward to ESP32 and ack back to app
                 try:
                     await send_command_to_esp32(device_id, is_on)
                     # Build device object to return
-                    device_obj = create_device_json(device_id, f"Device {device_id}", "unknown", bool(is_on))
-                    ack = {"type": "ack", "requestId": request_id, "status": "ok", "device": device_obj}
+                    device_obj = create_device_json(device_id, f"Device {device_id}", DEVICE_TYPE_UNKNOWN, bool(is_on))
+                    ack = {"type": MSG_TYPE_ACK, "requestId": request_id, "status": "ok", "device": device_obj}
                     await websocket.send_text(json.dumps(ack, ensure_ascii=False))
                 except Exception as e:
-                    err = {"type": "ack", "requestId": request_id, "status": "error", "error": str(e)}
+                    err = {"type": MSG_TYPE_ACK, "requestId": request_id, "status": "error", "error": str(e)}
                     try:
                         await websocket.send_text(json.dumps(err, ensure_ascii=False))
                     except Exception:
                         pass
-            elif action == "get_logs":
+            elif action == ACTION_GET_LOGS:
                 limit = int(payload.get("limit", 100))
-                resp = {"type": "logs_response", "logs": received_logs[-limit:], "sensors": received_sensors[-limit:], "requestId": request_id}
+                resp = {"type": MSG_TYPE_LOGS_RESPONSE, "logs": received_logs[-limit:], "sensors": received_sensors[-limit:], "requestId": request_id}
                 try:
                     await websocket.send_text(json.dumps(resp, ensure_ascii=False))
                 except Exception:
@@ -403,11 +391,10 @@ async def websocket_app(websocket: WebSocket):
 @app.on_event("startup")
 async def on_startup():
     print(f"FastAPI running on http://localhost:{FASTAPI_PORT}")
-    print(f"ESP32 WebSocket endpoint: ws://localhost:{FASTAPI_PORT}/ws/esp32")
-    print(f"Whisper model: {WHISPER_MODEL_NAME}")
+    print(f"ESP32 WebSocket endpoint: ws://localhost:{FASTAPI_PORT}{WS_ESP32_PATH}")
     device = "CUDA" if torch.cuda.is_available() else "CPU"
     print(f"Using {device} for inference")
-    # Start UDP discovery responder in background thread for LAN testing
+    # Start UDP discovery responder in background thread for LAN discovery
     try:
         t = threading.Thread(target=_udp_discovery_responder, args=(DISCOVERY_PORT,), daemon=True)
         t.start()

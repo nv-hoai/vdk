@@ -33,6 +33,9 @@ smarthomeapp/android/.gradle/
 smarthomeapp/android/app/debug/
 smarthomeapp/android/app/profile/
 smarthomeapp/android/app/release/
+smarthomeapp/linux/build/
+smarthomeapp/windows/build/
+smarthomeapp/macos/Pods/
 
 # ============ PYTHON (server/) ============
 server/__pycache__/
@@ -75,3 +78,30 @@ esp32_client/*.exe
 esp32_client/*.out
 esp32_client/*.dSYM/
 esp32_client/__pycache__/
+
+# ============ DATA FILES ============
+*.jsonl
+*.db
+*.sqlite
+*.sqlite3
+*.csv
+server/server_logs.jsonl
+server/server_sensor_data.jsonl
+server/data/
+server/cache/
+server/temp/
+server/tmp/
+esp32_client/data/
+esp32_client/logs/
+
+# ============ AUTO-GENERATED & BUILD ARTIFACTS ============
+smarthomeapp/.gradle/
+smarthomeapp/android/build/
+smarthomeapp/build/reports/
+smarthomeapp/build/intermediates/
+smarthomeapp/build/generated/
+smarthomeapp/build/kotlin/
+smarthomeapp/build/outputs/
+*.lock
+*.part
+*.partial

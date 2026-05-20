@@ -3,6 +3,11 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 import '../../config/voice_commands.dart';
 
+// Speech recognition constants
+const String _localeId = 'vi_VN';
+const Duration _listenDuration = Duration(seconds: 8);
+const Duration _pauseDuration = Duration(seconds: 2);
+
 class VoiceControlTab extends StatefulWidget {
   const VoiceControlTab({
     super.key,
@@ -87,25 +92,16 @@ class _VoiceControlTabState extends State<VoiceControlTab> {
 
       await _speech.listen(
         onResult: _onSpeechResult,
-        listenFor: const Duration(seconds: 8),
-        pauseFor: const Duration(seconds: 2),
-        localeId: 'vi_VN',
+        listenFor: _listenDuration,
+        pauseFor: _pauseDuration,
+        localeId: _localeId,
       );
-
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _isListening = true;
-      });
     }
   }
 
   void _onSpeechResult(dynamic result) {
-    final dynamicResult = result as dynamic;
-    final words = (dynamicResult.recognizedWords ?? '').toString();
-    final isFinal = dynamicResult.finalResult == true;
+    final words = (result.recognizedWords ?? '').toString();
+    final isFinal = result.finalResult == true;
 
     setState(() {
       _lastWords = words;
@@ -127,7 +123,7 @@ class _VoiceControlTabState extends State<VoiceControlTab> {
     final status = _isListening
         ? 'Listening... 🎤'
         : _speechError.isNotEmpty
-            ? 'Error: '
+            ? 'Error: $_speechError'
             : 'Ready to listen';
 
     return Center(
