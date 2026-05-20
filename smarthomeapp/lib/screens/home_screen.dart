@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
@@ -5,10 +6,9 @@ import '../config/app_config.dart';
 import '../config/voice_commands.dart';
 import '../models/device.dart';
 import '../services/esp32_client.dart';
-import 'tabs/device_state_log_tab.dart';
 import 'tabs/manual_control_tab.dart';
+import 'tabs/sensor_tab.dart';
 import 'tabs/voice_control_tab.dart';
-import 'tabs/server_logs_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,37 +20,100 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     {
   final Esp32Client _client = Esp32Client(baseUrl: AppConfig.esp32BaseUrl);
+  StreamSubscription<Map<String, dynamic>>? _wsSub;
 
   int _currentIndex = 1;
   bool _loading = true;
   String? _error;
   List<Device> _devices = const [];
-  List<DeviceLog> _deviceLogs = [];
-  List<Map<String, dynamic>> _serverLogs = [];
+  List<Map<String, dynamic>> _sensorLogs = [];
+
+  DateTime _sensorTimestamp(Map<String, dynamic> reading) {
+    final raw = reading['receivedAt']?.toString() ?? reading['timestamp']?.toString() ?? '';
+    final parsed = DateTime.tryParse(raw);
+    if (parsed != null) {
+      return parsed;
+    }
+    final numeric = int.tryParse(raw);
+    if (numeric != null) {
+      if (numeric > 1000000000000) {
+        return DateTime.fromMillisecondsSinceEpoch(numeric);
+      }
+      if (numeric > 1000000000) {
+        return DateTime.fromMillisecondsSinceEpoch(numeric * 1000);
+      }
+      return DateTime.fromMillisecondsSinceEpoch(numeric * 1000);
+    }
+    return DateTime.fromMillisecondsSinceEpoch(0);
+  }
+
+  List<Map<String, dynamic>> _sortSensorsNewestFirst(List<Map<String, dynamic>> readings) {
+    final sorted = List<Map<String, dynamic>>.from(readings);
+    sorted.sort((a, b) => _sensorTimestamp(b).compareTo(_sensorTimestamp(a)));
+    return sorted;
+  }
+
+  void _appendSensorReading(Map<String, dynamic> reading) {
+    _sensorLogs = _sortSensorsNewestFirst([
+      reading,
+      ..._sensorLogs,
+    ]);
+    if (_sensorLogs.length > 200) {
+      _sensorLogs = _sensorLogs.sublist(0, 200);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _loadDevices();
+    // Connect WebSocket for realtime logs and updates
+    try {
+      _client.connectWebSocket();
+      _wsSub = _client.realtimeStream.listen((msg) {
+        if (!mounted) return;
+        // Snapshot handling
+        final type = msg['type'];
+        if (type == 'snapshot') {
+          final devices = (msg['devices'] as List?)?.whereType<Map<String, dynamic>>().map(Device.fromJson).toList() ?? [];
+          final sensors = (msg['sensors'] as List?)?.whereType<Map<String, dynamic>>().toList() ?? [];
+          setState(() {
+            _devices = devices;
+            _sensorLogs = _sortSensorsNewestFirst(sensors);
+            _loading = false;
+          });
+          return;
+        }
+
+        // Route incoming realtime messages into the sensor collection.
+        setState(() {
+          if (type == 'sensor_data') {
+            _appendSensorReading(msg);
+          }
+        });
+      });
+    } catch (_) {}
   }
 
-  Future<void> _loadServerLogs() async {
+  Future<void> _loadSensors() async {
     try {
-      final logs = await _client.fetchLogs(limit: 200);
+      final sensors = await _client.fetchSensors(limit: 200);
       if (!mounted) return;
       setState(() {
-        _serverLogs = logs;
+        _sensorLogs = _sortSensorsNewestFirst(sensors);
       });
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load server logs: $error')),
+        SnackBar(content: Text('Failed to load sensor data: $error')),
       );
     }
   }
 
   @override
   void dispose() {
+    // No polling used; cleanup websocket subscription and client
+    _wsSub?.cancel();
+    _client.dispose();
     super.dispose();
   }
 
@@ -90,15 +153,6 @@ class _HomeScreenState extends State<HomeScreen>
         _devices = _devices
             .map((item) => item.id == updated.id ? updated : item)
             .toList();
-        // Log device state change
-        _deviceLogs.add(
-          DeviceLog(
-            deviceName: device.name,
-            deviceId: device.id,
-            newState: nextState,
-            timestamp: DateTime.now(),
-          ),
-        );
       });
     } catch (_) {
       setState(() {
@@ -147,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen>
       );
     }
 
-    final titles = ['Voice Control', 'Smart Home', 'Device Log', 'Server Log'];
+    final titles = ['Voice Control', 'Smart Home', 'Sensor'];
     return Scaffold(
       appBar: AppBar(
         title: Text(titles[_currentIndex]),
@@ -165,20 +219,12 @@ class _HomeScreenState extends State<HomeScreen>
             devices: _devices,
             onDeviceToggled: _toggleDevice,
           ),
-          DeviceStateLogTab(
-            logs: _deviceLogs,
-            onClearLogs: () {
-              setState(() {
-                _deviceLogs.clear();
-              });
-            },
-          ),
-          ServerLogsTab(
-            logs: _serverLogs,
-            onRefresh: _loadServerLogs,
+          SensorTab(
+            readings: _sensorLogs,
+            onRefresh: _loadSensors,
             onClear: () {
               setState(() {
-                _serverLogs.clear();
+                _sensorLogs.clear();
               });
             },
           ),
@@ -191,8 +237,8 @@ class _HomeScreenState extends State<HomeScreen>
             _currentIndex = index;
           });
           // Load server logs when user opens the Server Log tab
-          if (index == 3) {
-            _loadServerLogs();
+          if (index == 2) {
+            _loadSensors();
           }
         },
         items: const [
@@ -207,14 +253,9 @@ class _HomeScreenState extends State<HomeScreen>
             label: 'Control',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.history_outlined),
-            activeIcon: Icon(Icons.history),
-            label: 'Log',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cloud_outlined),
-            activeIcon: Icon(Icons.cloud),
-            label: 'Server',
+            icon: Icon(Icons.sensors_outlined),
+            activeIcon: Icon(Icons.sensors),
+            label: 'Sensor',
           ),
         ],
       ),

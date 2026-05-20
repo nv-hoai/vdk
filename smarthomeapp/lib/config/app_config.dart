@@ -1,5 +1,16 @@
+import 'package:flutter/foundation.dart';
+
 class AppConfig {
-  // Replace with your FastAPI server URL (PC running the server).
-  // Example: http://192.168.1.100:5000 (change IP and port as needed)
-  static const String esp32BaseUrl = 'http://10.152.235.10:5000';
+  static const int serverPort = 5000;
+  static const String fallbackLanHost = '10.152.235.10';
+
+  /// Web uses the current browser host so Chrome can reach a local server.
+  /// Mobile keeps the LAN fallback for manual testing.
+  static String get esp32BaseUrl {
+    if (kIsWeb) {
+      final host = Uri.base.host.isEmpty ? 'localhost' : Uri.base.host;
+      return 'http://$host:$serverPort';
+    }
+    return 'http://$fallbackLanHost:$serverPort';
+  }
 }
