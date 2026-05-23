@@ -203,7 +203,14 @@ def _udp_discovery_responder(bind_port: int = DISCOVERY_PORT):
                     continue
 
                 if msg == EVENT_DISCOVER_SMARTHOME:
-                    host_ip = addr[0]
+                    temp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                    try:
+                        temp_sock.connect((addr[0], 80))
+                        host_ip = temp_sock.getsockname()[0]
+                    except Exception:
+                        host_ip = socket.gethostbyname(socket.gethostname())
+                    finally:
+                        temp_sock.close()
                     payload = json.dumps({
                         "baseUrl": f"ws://{host_ip}:{FASTAPI_PORT}",
                         "wsPath": WS_ESP32_PATH,
